@@ -48,3 +48,11 @@ npm run typecheck
 `npm test` runs `vitest run` once. `vitest.config.ts` sets `environment` to `node` and includes `tests/**/*.test.ts`. The suite reads `fixtures/significant_day.sample.geojson` with `readFileSync` and `JSON.parse`. It checks the three quake records, checks that the first `time` is still `1710000000000`, and checks that `parseQuakes({ type: "Feature", id: "x" })` throws `TypeError`. That command does not open a socket.
 
 `npm run typecheck` runs `tsc --noEmit`. `tsconfig.json` enables `strict`, targets ES2022, and resolves modules with `NodeNext`. It typechecks `src`, `tests`, and `vitest.config.ts`, and it does not emit JavaScript.
+
+## Free USGS feed (no API key)
+
+Day 2 will GET this URL:
+
+https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson
+
+USGS serves that summary to anonymous clients. There is no API key, no signup, and no `Authorization` header. The body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day. The same URL is stored on the fixture as `metadata.url`. Day 1 never requests it. Tests keep reading the file on disk so a USGS outage or a missing network does not fail `npm test`.
