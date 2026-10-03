@@ -1,0 +1,18 @@
+{
+  "name": "faultline",
+  "version": "0.1.0",
+  "description": "TypeScript CLI for USGS significant earthquakes. No API key.",
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.21",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}
