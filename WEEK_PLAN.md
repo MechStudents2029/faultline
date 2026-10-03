@@ -2,9 +2,9 @@
 
 ## Day 1 — Parse fixture GeoJSON
 
-Status: done
+Status: done, squash-merged to `main` in pull request #1
 
-Parse USGS earthquake GeoJSON `features` into `{ id, magnitude, place, time }` from the checked-in fixture `fixtures/significant_day.sample.geojson`. `time` is USGS epoch milliseconds. Vitest loads the fixture from disk and does not open the network.
+`parseQuakes` reads `fixtures/significant_day.sample.geojson` and returns `{ id, magnitude, place, time }`. `time` stays USGS epoch milliseconds. Vitest loads that file from disk and does not open the network. A feature is rejected with `TypeError` when `id` is not a non-empty string, or when `properties.mag`, `properties.place`, or `properties.time` is missing or has the wrong type.
 
 ## Day 2 — `npm run quakes`
 
