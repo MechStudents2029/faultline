@@ -25,11 +25,16 @@ Other `properties` fields (`title`, `magType`, `url`, `alert`, `sig`, `status`) 
 
 The first event's `time` is 2024-03-09T16:00:00.000Z. The second is two hours later (`1710007200000`) and the third is one hour after that (`1710010800000`). Tests compare these values exactly, so a fixture edit has to update `tests/parseQuakes.test.ts` in the same change.
 
-## Day 1
+## How to run the tests
+
+The package requires Node.js 20 or newer (`engines` in `package.json`). From the repository root:
 
 ```bash
 npm install
 npm test
+npm run typecheck
 ```
 
-`npm test` loads `fixtures/significant_day.sample.geojson` from disk and checks the parsed quake fields.
+`npm test` runs `vitest run` once. `vitest.config.ts` sets `environment` to `node` and includes `tests/**/*.test.ts`. The suite reads `fixtures/significant_day.sample.geojson` with `readFileSync` and `JSON.parse`. It checks the three quake records, checks that the first `time` is still `1710000000000`, and checks that `parseQuakes({ type: "Feature", id: "x" })` throws `TypeError`. That command does not open a socket.
+
+`npm run typecheck` runs `tsc --noEmit`. `tsconfig.json` enables `strict`, targets ES2022, and resolves modules with `NodeNext`. It typechecks `src`, `tests`, and `vitest.config.ts`, and it does not emit JavaScript.
