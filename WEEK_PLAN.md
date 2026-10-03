@@ -10,7 +10,14 @@ Status: done, squash-merged to `main` in pull request #1
 
 Status: unstarted
 
-`npm run quakes` fetches https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson and prints JSON. A `--min-magnitude` flag filters the printed quakes.
+Add an `npm run quakes` script that fetches the live feed and prints quakes as JSON.
+
+1. GET `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson` with `fetch`. Send no API key and no auth header.
+2. Pass the parsed JSON to `parseQuakes`.
+3. Write the quake array to stdout as JSON.
+4. Honor `--min-magnitude <number>`. When the flag is set, drop quakes whose `magnitude` is lower than that number. When the flag is omitted, print every quake the parser returned.
+
+Keep `tests/parseQuakes.test.ts` on the fixture file. Cover the magnitude filter with an in-memory FeatureCollection so the suite still does not call USGS. Leave `parseQuakes` returning every valid feature; the flag is a CLI filter on that list.
 
 ## Day 3 — README
 
