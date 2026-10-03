@@ -2,6 +2,16 @@
 
 Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Later days will fetch the live significant-day feed.
 
+## Project goals
+
+Faultline is a one-week resume CLI. Someone should be able to clone the repo and run it without an account or an API key.
+
+- Day 1, done: map USGS GeoJSON to `{ id, magnitude, place, time }` from a fixture, covered by Vitest, with no network call.
+- Day 2, not started: `npm run quakes` fetches the live significant-day feed, prints JSON, and accepts `--min-magnitude` to hide smaller events.
+- Day 3, not started: the README shows that command, the feed URL, and the fact that fixture tests stay offline.
+
+`parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
+
 ## USGS feature shape
 
 `parseQuakes` accepts a GeoJSON object whose `type` is `FeatureCollection`. Each member of `features` must be a `Feature`.
