@@ -23,4 +23,6 @@ Keep `tests/parseQuakes.test.ts` on the fixture file. Cover the magnitude filter
 
 Status: unstarted
 
-README documents the significant-day feed URL, that the feed needs no API key, and that fixture tests stay offline.
+Once `npm run quakes` works, document the real command in the README: the significant-day feed URL, that the feed needs no API key, the `--min-magnitude` flag, and a sample of the JSON it prints. State again that `npm test` reads `fixtures/significant_day.sample.geojson` from disk and does not open the network.
+
+Day 3 does not change the field mapping. `id` stays on the Feature. `mag`, `place`, and `time` stay under `properties`. The README already previews the feed URL from the Day 1 notes; Day 3 should replace that preview with the command that actually runs.
