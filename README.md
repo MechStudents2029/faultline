@@ -1,16 +1,27 @@
 # faultline
 
-Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Later days will fetch the live significant-day feed.
+Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`.
 
 ## Project goals
 
 Faultline is a one-week resume CLI. Someone should be able to clone the repo and run it without an account or an API key.
 
 - Day 1, done: map USGS GeoJSON to `{ id, magnitude, place, time }` from a fixture, covered by Vitest, with no network call.
-- Day 2, not started: `npm run quakes` fetches the live significant-day feed, prints JSON, and accepts `--min-magnitude` to hide smaller events.
+- Day 2, done: `npm run quakes` fetches the live significant-day feed, prints JSON, and accepts `--min-magnitude` to hide smaller events.
 - Day 3, not started: the README shows that command, the feed URL, and the fact that fixture tests stay offline.
 
 `parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
+
+## List live quakes
+
+`npm run quakes` runs `tsx src/quakes.ts`. The script GETs the significant-day feed, passes the JSON body to `parseQuakes`, and writes the quake array to stdout as JSON with two-space indentation and a trailing newline.
+
+```bash
+npm install
+npm run quakes
+```
+
+Each object is `{ id, magnitude, place, time }`. `time` is still USGS epoch milliseconds. A non-OK HTTP response writes `USGS significant-day feed failed: <status> <statusText>` to stderr and sets the exit code to 1.
 
 ## USGS feature shape
 
