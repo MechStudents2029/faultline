@@ -8,7 +8,7 @@ Faultline is a one-week resume CLI. Someone should be able to clone the repo and
 
 - Day 1, done: map USGS GeoJSON to `{ id, magnitude, place, time }` from a fixture, covered by Vitest, with no network call.
 - Day 2, done: `npm run quakes` fetches the live significant-day feed, prints JSON, and accepts `--min-magnitude` to hide smaller events.
-- Day 3, not started: the README shows that command, the feed URL, and the fact that fixture tests stay offline.
+- Day 3, noted in this README: `npm run quakes`, `--min-magnitude`, the empty-feed `[]` output, the inclusive filter, the offline tests, and the no-key feed URL. `geometry` is still not part of the record.
 
 `parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
 
@@ -93,8 +93,8 @@ npm run typecheck
 
 ## Free USGS feed (no API key)
 
-Day 2 will GET this URL:
+`npm run quakes` GETs this URL with `fetch` and sends no API key, no signup, and no `Authorization` header:
 
 https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson
 
-USGS serves that summary to anonymous clients. There is no API key, no signup, and no `Authorization` header. The body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day. The same URL is stored on the fixture as `metadata.url`. Day 1 never requests it. Tests keep reading the file on disk so a USGS outage or a missing network does not fail `npm test`.
+USGS serves that summary to anonymous clients. The body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day. The same URL is the `SIGNIFICANT_DAY_URL` constant in `src/quakes.ts` and `metadata.url` on the fixture. `npm test` still reads `fixtures/significant_day.sample.geojson` from disk, so a USGS outage or a missing network does not fail the suite. The CLI is the only path that opens a socket, and only after `--min-magnitude` parses.
