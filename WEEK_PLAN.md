@@ -25,6 +25,14 @@ Keep `tests/parseQuakes.test.ts` on the fixture file. Cover the magnitude filter
 
 Status: unstarted
 
-Once `npm run quakes` works, document the real command in the README: the significant-day feed URL, that the feed needs no API key, the `--min-magnitude` flag, and a sample of the JSON it prints. State again that `npm test` reads `fixtures/significant_day.sample.geojson` from disk and does not open the network.
+Day 2 is on `main`. The README still describes `npm run quakes` as future work. Day 3 replaces that preview with the command that actually runs. It does not change the field mapping: `id` stays on the Feature, and `mag`, `place`, and `time` stay under `properties`.
 
-Day 3 does not change the field mapping. `id` stays on the Feature. `mag`, `place`, and `time` stay under `properties`. The README already previews the feed URL from the Day 1 notes; Day 3 should replace that preview with the command that actually runs.
+Write these notes:
+
+- `npm run quakes` runs `tsx src/quakes.ts`, GETs the significant-day feed, and prints the parsed array as two-space JSON.
+- `npm run quakes -- --min-magnitude <number>` forwards the flag. The `--` is required so npm does not consume it.
+- The filter keeps `magnitude >=` the threshold. Omitting the flag prints every parsed quake. A missing or non-numeric value throws `TypeError` before `fetch`.
+- A significant day with no events is a successful FeatureCollection whose `features` array is empty. The CLI prints `[]` and exits 0.
+- `tests/minMagnitude.test.ts` uses an in-memory collection (4.7, 5, 6.2) and spies on `fetch`. `npm test` still does not call USGS.
+- The feed stays anonymous: no API key and no `Authorization` header.
+- Leave `geometry` out of the record. Longitude, latitude, and depth stay off `{ id, magnitude, place, time }`.
