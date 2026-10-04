@@ -87,6 +87,8 @@ npm run typecheck
 
 `npm test` runs `vitest run` once. `vitest.config.ts` sets `environment` to `node` and includes `tests/**/*.test.ts`. The suite reads `fixtures/significant_day.sample.geojson` with `readFileSync` and `JSON.parse`. It checks the three quake records, checks that the first `time` is still `1710000000000`, and checks that `parseQuakes({ type: "Feature", id: "x" })` throws `TypeError`. That command does not open a socket.
 
+`tests/minMagnitude.test.ts` does not read the fixture and does not call USGS. It builds an in-memory FeatureCollection with magnitudes 4.7 (`low`), 5 (`edge`), and 6.2 (`high`). `selectQuakes` with `--min-magnitude 5` keeps `edge` and `high` and drops `low`, which checks the inclusive boundary. A second test omits the flag and expects every parsed quake. A third test expects `TypeError` from `readMinMagnitude(["--min-magnitude"])` and from `readMinMagnitude(["--min-magnitude", "big"])`. The filter test spies on `globalThis.fetch` and asserts it was not called. The Day 1 fixture test is unchanged. `npm test` runs those six tests in two files.
+
 `npm run typecheck` runs `tsc --noEmit`. `tsconfig.json` enables `strict`, targets ES2022, and resolves modules with `NodeNext`. It typechecks `src`, `tests`, and `vitest.config.ts`, and it does not emit JavaScript.
 
 ## Free USGS feed (no API key)
