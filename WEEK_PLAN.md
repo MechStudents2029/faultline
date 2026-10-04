@@ -8,7 +8,9 @@ Status: done, squash-merged to `main` in pull request #1
 
 ## Day 2 — `npm run quakes`
 
-Status: done
+Status: done, squash-merged to `main` in pull request #2
+
+The squash commit is `f9e33e557b70c87d3f9aba3a1c0eff0ac1d29083`. GitHub deleted `cursor/day2-quakes-cli-0479`. `npm run quakes` is `tsx src/quakes.ts`. `readMinMagnitude` runs on `process.argv` before `fetch`, so a missing or non-numeric flag fails before any USGS request.
 
 Add an `npm run quakes` script that fetches the live feed and prints quakes as JSON.
 
