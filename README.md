@@ -23,6 +23,14 @@ npm run quakes
 
 Each object is `{ id, magnitude, place, time }`. `time` is still USGS epoch milliseconds. A non-OK HTTP response writes `USGS significant-day feed failed: <status> <statusText>` to stderr and sets the exit code to 1.
 
+Pass `--min-magnitude` after npm's `--` so the flag reaches the script instead of npm:
+
+```bash
+npm run quakes -- --min-magnitude 5
+```
+
+The number is the lowest magnitude to print. `readMinMagnitude` reads the token immediately after the flag.
+
 ## USGS feature shape
 
 `parseQuakes` accepts a GeoJSON object whose `type` is `FeatureCollection`. Each member of `features` must be a `Feature`.
