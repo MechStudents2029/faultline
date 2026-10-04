@@ -31,6 +31,14 @@ npm run quakes -- --min-magnitude 5
 
 The number is the lowest magnitude to print. `readMinMagnitude` reads the token immediately after the flag.
 
+A quiet significant day is a successful response. USGS can return a FeatureCollection whose `features` array is empty when the past day has no significant earthquakes. `parseQuakes` maps that body to `[]`, and stdout is:
+
+```text
+[]
+```
+
+That empty array is not an error. The process exit code stays 0. The same `[]` line is printed when the feed has events but every magnitude is below `--min-magnitude`.
+
 ## USGS feature shape
 
 `parseQuakes` accepts a GeoJSON object whose `type` is `FeatureCollection`. Each member of `features` must be a `Feature`.
