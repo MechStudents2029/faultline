@@ -8,7 +8,7 @@ Status: done, squash-merged to `main` in pull request #1
 
 ## Day 2 — `npm run quakes`
 
-Status: unstarted
+Status: done
 
 Add an `npm run quakes` script that fetches the live feed and prints quakes as JSON.
 

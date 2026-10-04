@@ -17,3 +17,15 @@ Pull request #1, "Day 1: parse USGS earthquake GeoJSON from a fixture", was squa
 - Day 2 has not started. `package.json` scripts are `test` and `typecheck` only. There is no `quakes` script, no `fetch` of the significant-day feed, and no `--min-magnitude` filter.
 - Day 3 has not started. The README describes the parser, the fixture, and the public feed, and it does not yet show a working `npm run quakes` invocation or sample output.
 - `parseQuakes` still ignores `geometry`. The fixture stores `[longitude, latitude, depth]` on each Point, and those numbers are not part of `{ id, magnitude, place, time }`.
+
+## 2026-10-04 — Day 2 live feed
+
+- `npm run quakes` GETs the public significant-day feed with `fetch`, passes the body to `parseQuakes`, and writes the quake array to stdout as JSON.
+- `--min-magnitude <number>` drops quakes below that magnitude. Omitting the flag prints every parsed quake. `parseQuakes` itself still returns every valid feature.
+- `tests/minMagnitude.test.ts` covers the filter with an in-memory FeatureCollection. It does not request USGS. The Day 1 fixture test is unchanged.
+- Day 3 has not started. The README does not yet document the working command or a sample of its JSON.
+
+## Still open after Day 2
+
+- Day 3 has not started. The README describes the parser, the fixture, and the public feed, and it does not yet show a working `npm run quakes` invocation or sample output.
+- `parseQuakes` still ignores `geometry`. The fixture stores `[longitude, latitude, depth]` on each Point, and those numbers are not part of `{ id, magnitude, place, time }`.

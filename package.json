@@ -7,11 +7,13 @@
     "node": ">=20"
   },
   "scripts": {
+    "quakes": "tsx src/quakes.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@types/node": "^22.15.21",
+    "tsx": "^4.23.15",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
   }
