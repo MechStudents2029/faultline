@@ -39,6 +39,19 @@ A quiet significant day is a successful response. USGS can return a FeatureColle
 
 That empty array is not an error. The process exit code stays 0. The same `[]` line is printed when the feed has events but every magnitude is below `--min-magnitude`.
 
+## `--min-magnitude` filter
+
+`selectQuakes` keeps a quake when `magnitude` is greater than or equal to the flag. A quake whose magnitude equals the threshold stays. Quakes below it are dropped.
+
+Omitting the flag returns a copy of every quake `parseQuakes` returned. `parseQuakes` does not read argv and still returns every valid feature.
+
+`main` calls `readMinMagnitude` before `fetch`. These values never open a socket:
+
+- `--min-magnitude` with no following token throws `TypeError` (`--min-magnitude requires a number`).
+- A token that is not a finite number, such as `big`, throws `TypeError` (`--min-magnitude expects a finite number, received big`).
+
+Either message is written to stderr and the exit code is 1. The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`5`, `4.5`, `.5`, `1e1`).
+
 ## USGS feature shape
 
 `parseQuakes` accepts a GeoJSON object whose `type` is `FeatureCollection`. Each member of `features` must be a `Feature`.
