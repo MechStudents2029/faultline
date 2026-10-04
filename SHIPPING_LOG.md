@@ -29,3 +29,7 @@ Pull request #1, "Day 1: parse USGS earthquake GeoJSON from a fixture", was squa
 
 - Day 3 has not started. The README describes the parser, the fixture, and the public feed, and it does not yet show a working `npm run quakes` invocation or sample output.
 - `parseQuakes` still ignores `geometry`. The fixture stores `[longitude, latitude, depth]` on each Point, and those numbers are not part of `{ id, magnitude, place, time }`.
+
+## 2026-10-04 — Day 2 squash-merged
+
+Pull request #2, "Day 2: fetch the USGS significant-day feed with npm run quakes", was squash-merged into `main`. The merge commit is `f9e33e557b70c87d3f9aba3a1c0eff0ac1d29083`. It carries `src/quakes.ts`, `src/selectQuakes.ts`, `tests/minMagnitude.test.ts`, the `quakes` script (`tsx src/quakes.ts`), and the `tsx` devDependency. GitHub deleted `cursor/day2-quakes-cli-0479` after the merge, so `main` holds one Day 2 commit rather than the branch commit plus a second copy.
