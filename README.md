@@ -72,6 +72,8 @@ Either message is written to stderr and the exit code is 1. The accepted token i
 
 `depthKm` is kilometers, the unit USGS stores in the third coordinate. It is not meters and it is not feet. A positive value is below the surface; the parser does not convert or abs the number. The Chile sample's `35` is 35 km down, the Korumburra sample's `10` is 10 km down, and the Hachijo-jima sample's `22.4` is 22.4 km down.
 
+Coordinate order is GeoJSON `[longitude, latitude, depth]`, not a latitude-first pair. The Chile sample's `coordinates` array is `[-71.2, -27.4, 35]`: longitude `-71.2`, then latitude `-27.4`, then depth. Reading those first two numbers as latitude then longitude would put the quake in the wrong hemisphere. The parser keeps the array order and names the fields `longitude`, `latitude`, and `depthKm`.
+
 ## USGS feature shape
 
 `parseQuakes` accepts a GeoJSON object whose `type` is `FeatureCollection`. Each member of `features` must be a `Feature`.
