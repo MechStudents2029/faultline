@@ -52,3 +52,7 @@ The "Still open after Day 2" note above described the tree at the squash merge. 
 ## 2026-10-05 — Day 4 squash-merged
 
 Pull request #3, "Day 4: read longitude, latitude, and depth from geometry", was squash-merged into `main`. The merge commit is `87007f7c1b1e39178e06435596b5dda5989dc4a5`. It carries the Point fields on `parseQuakes`, the updated fixture expectations, and the in-memory min-magnitude Points. GitHub deleted `cursor/day4-quake-geometry-16ed` after the merge, so `main` holds one Day 4 commit rather than the branch commit plus a second copy.
+
+## 2026-10-05 — README notes after the Day 4 merge
+
+The Day 4 geometry entry above described the tree at the squash merge, when the README still showed `{ id, magnitude, place, time }`. The README on `main` now shows an example object with `longitude`, `latitude`, and `depthKm`, states that `depthKm` is kilometers (positive down, not meters), and states that `coordinates` are `[longitude, latitude, depth]`. The fixture table includes those three columns. The test notes describe the offline geometry `TypeError` cases and the Points on the in-memory min-magnitude features. `WEEK_PLAN.md` records the squash commit and sketches Day 5 (`--format text`) as unstarted. No new feed and no API key.
