@@ -1,6 +1,6 @@
 # faultline
 
-Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`.
+Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point.
 
 ## Project goals
 
@@ -8,7 +8,8 @@ Faultline is a one-week resume CLI. Someone should be able to clone the repo and
 
 - Day 1, done: map USGS GeoJSON to `{ id, magnitude, place, time }` from a fixture, covered by Vitest, with no network call.
 - Day 2, done: `npm run quakes` fetches the live significant-day feed, prints JSON, and accepts `--min-magnitude` to hide smaller events.
-- Day 3, noted in this README: `npm run quakes`, `--min-magnitude`, the empty-feed `[]` output, the inclusive filter, the offline tests, and the no-key feed URL. `geometry` is still not part of the record.
+- Day 3, noted in this README: `npm run quakes`, `--min-magnitude`, the empty-feed `[]` output, the inclusive filter, the offline tests, and the no-key feed URL.
+- Day 4, done: `longitude`, `latitude`, and `depthKm` come from the Point. A missing or malformed geometry throws `TypeError`. The CLI prints those fields on every quake.
 
 `parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
 
