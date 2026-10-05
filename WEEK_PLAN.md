@@ -37,3 +37,9 @@ Landed in the README:
 - The feed stays anonymous: no API key and no `Authorization` header.
 
 Still open: `geometry`. Longitude, latitude, and depth stay off `{ id, magnitude, place, time }`.
+
+## Day 4 — geometry
+
+Status: done
+
+`parseQuakes` reads each Feature `geometry`. A USGS Point stores `coordinates` as `[longitude, latitude, depth in km]`. The parsed record is `{ id, magnitude, place, time, longitude, latitude, depthKm }`. A feature with missing geometry, a non-Point, or coordinates that are not three finite numbers is rejected with `TypeError`. The fixture test and the in-memory min-magnitude collection both expect those fields. `npm test` still does not call USGS.

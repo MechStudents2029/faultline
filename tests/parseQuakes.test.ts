@@ -23,18 +23,27 @@ describe("parseQuakes", () => {
         magnitude: 6.2,
         place: "45 km SW of Copiapo, Chile",
         time: 1710000000000,
+        longitude: -71.2,
+        latitude: -27.4,
+        depthKm: 35,
       },
       {
         id: "us1000sample2",
         magnitude: 4.7,
         place: "5 km NNE of Korumburra, Australia",
         time: 1710007200000,
+        longitude: 145.8401,
+        latitude: -38.3802,
+        depthKm: 10,
       },
       {
         id: "us1000sample3",
         magnitude: 5.1,
         place: "120 km ESE of Hachijo-jima, Japan",
         time: 1710010800000,
+        longitude: 140.9,
+        latitude: 32.6,
+        depthKm: 22.4,
       },
     ]);
   });
@@ -50,5 +59,62 @@ describe("parseQuakes", () => {
     expect(() => parseQuakes({ type: "Feature", id: "x" })).toThrow(
       TypeError,
     );
+  });
+
+  it("rejects a feature with missing or malformed geometry", () => {
+    const properties = {
+      mag: 5,
+      place: "somewhere",
+      time: 1710000000000,
+    };
+
+    expect(() =>
+      parseQuakes({
+        type: "FeatureCollection",
+        features: [{ type: "Feature", id: "us1000bad", properties }],
+      }),
+    ).toThrow(TypeError);
+
+    expect(() =>
+      parseQuakes({
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            id: "us1000bad",
+            properties,
+            geometry: { type: "LineString", coordinates: [] },
+          },
+        ],
+      }),
+    ).toThrow(TypeError);
+
+    expect(() =>
+      parseQuakes({
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            id: "us1000bad",
+            properties,
+            geometry: { type: "Point", coordinates: [-71.2, -27.4] },
+          },
+        ],
+      }),
+    ).toThrow(TypeError);
+
+    expect(() =>
+      parseQuakes({
+        type: "FeatureCollection",
+        features: [
+          {
+            type: "Feature",
+            id: "us1000bad",
+            properties,
+            geometry: { type: "Point", coordinates: [-71.2, -27.4, "35"] },
+          },
+        ],
+      }),
+    ).toThrow(TypeError);
   });
 });

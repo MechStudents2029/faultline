@@ -41,3 +41,10 @@ The "Still open after Day 2" note above described the tree at the squash merge. 
 ## Still open after those README notes
 
 - `parseQuakes` still ignores `geometry`. The fixture stores `[longitude, latitude, depth]` on each Point, and those numbers are not part of `{ id, magnitude, place, time }`.
+
+## 2026-10-05 — Day 4 geometry
+
+- `parseQuakes` copies `geometry.coordinates` `[longitude, latitude, depth in km]` onto each quake as `longitude`, `latitude`, and `depthKm`.
+- Missing geometry, a non-Point, or coordinates that are not three finite numbers throw `TypeError`.
+- `tests/parseQuakes.test.ts` expects the three fixture points. `tests/minMagnitude.test.ts` puts a Point on each in-memory feature. `npm test` still does not call USGS.
+- The README still describes `{ id, magnitude, place, time }` and does not yet show the location fields.

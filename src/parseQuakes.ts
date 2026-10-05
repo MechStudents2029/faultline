@@ -3,11 +3,16 @@ export interface Quake {
   magnitude: number;
   place: string;
   time: number;
+  longitude: number;
+  latitude: number;
+  depthKm: number;
 }
 
 /**
  * Map a USGS earthquake GeoJSON FeatureCollection to quake records.
  * `time` is the USGS epoch milliseconds value from `properties.time`.
+ * `longitude`, `latitude`, and `depthKm` come from a Point's
+ * `geometry.coordinates` in the order `[longitude, latitude, depth in km]`.
  * Does not fetch the network.
  */
 export function parseQuakes(geojson: unknown): Quake[] {
@@ -48,7 +53,48 @@ function parseFeature(feature: unknown, index: number): Quake {
     throw new TypeError(`Feature ${id} is missing a finite time`);
   }
 
-  return { id, magnitude, place, time };
+  const { longitude, latitude, depthKm } = readPoint(feature.geometry, id);
+
+  return { id, magnitude, place, time, longitude, latitude, depthKm };
+}
+
+function readPoint(
+  geometry: unknown,
+  id: string,
+): { longitude: number; latitude: number; depthKm: number } {
+  if (!isRecord(geometry)) {
+    throw new TypeError(`Feature ${id} is missing geometry`);
+  }
+
+  if (geometry.type !== "Point") {
+    throw new TypeError(`Feature ${id} geometry is not a Point`);
+  }
+
+  const coordinates = geometry.coordinates;
+  if (!Array.isArray(coordinates) || coordinates.length !== 3) {
+    throw new TypeError(
+      `Feature ${id} geometry coordinates must be [longitude, latitude, depth]`,
+    );
+  }
+
+  const [longitude, latitude, depthKm] = coordinates;
+  if (!isFiniteNumber(longitude)) {
+    throw new TypeError(`Feature ${id} is missing a finite longitude`);
+  }
+
+  if (!isFiniteNumber(latitude)) {
+    throw new TypeError(`Feature ${id} is missing a finite latitude`);
+  }
+
+  if (!isFiniteNumber(depthKm)) {
+    throw new TypeError(`Feature ${id} is missing a finite depth`);
+  }
+
+  return { longitude, latitude, depthKm };
+}
+
+function isFiniteNumber(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value);
 }
 
 function isFeatureCollection(
