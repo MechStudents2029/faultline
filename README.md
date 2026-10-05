@@ -90,11 +90,13 @@ Other `properties` fields (`title`, `magType`, `url`, `alert`, `sig`, `status`) 
 
 `fixtures/significant_day.sample.geojson` is checked-in sample data in the significant-day shape. It is not a live download. `metadata.count` is 3, `metadata.generated` is `1710000000000`, and `metadata.url` is the public significant-day feed.
 
-| id | mag | place | time (epoch ms) |
-| --- | --- | --- | --- |
-| us1000sample1 | 6.2 | 45 km SW of Copiapo, Chile | 1710000000000 |
-| us1000sample2 | 4.7 | 5 km NNE of Korumburra, Australia | 1710007200000 |
-| us1000sample3 | 5.1 | 120 km ESE of Hachijo-jima, Japan | 1710010800000 |
+| id | mag | place | time (epoch ms) | longitude | latitude | depthKm |
+| --- | --- | --- | --- | --- | --- | --- |
+| us1000sample1 | 6.2 | 45 km SW of Copiapo, Chile | 1710000000000 | -71.2 | -27.4 | 35 |
+| us1000sample2 | 4.7 | 5 km NNE of Korumburra, Australia | 1710007200000 | 145.8401 | -38.3802 | 10 |
+| us1000sample3 | 5.1 | 120 km ESE of Hachijo-jima, Japan | 1710010800000 | 140.9 | 32.6 | 22.4 |
+
+Those three location columns are the Point `coordinates` in GeoJSON order. `tests/parseQuakes.test.ts` compares them exactly, along with `id`, `magnitude`, `place`, and `time`.
 
 The first event's `time` is 2024-03-09T16:00:00.000Z. The second is two hours later (`1710007200000`) and the third is one hour after that (`1710010800000`). Tests compare these values exactly, so a fixture edit has to update `tests/parseQuakes.test.ts` in the same change.
 
