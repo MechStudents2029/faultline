@@ -2,7 +2,11 @@ import { describe, expect, it, vi } from "vitest";
 import { parseQuakes } from "../src/parseQuakes.js";
 import { readMinMagnitude, selectQuakes } from "../src/selectQuakes.js";
 
-function feature(id: string, magnitude: number): unknown {
+function feature(
+  id: string,
+  magnitude: number,
+  coordinates: [number, number, number],
+): unknown {
   return {
     type: "Feature",
     id,
@@ -11,12 +15,20 @@ function feature(id: string, magnitude: number): unknown {
       place: `${id} place`,
       time: 1710000000000,
     },
+    geometry: {
+      type: "Point",
+      coordinates,
+    },
   };
 }
 
 const collection = {
   type: "FeatureCollection",
-  features: [feature("low", 4.7), feature("edge", 5), feature("high", 6.2)],
+  features: [
+    feature("low", 4.7, [-71.2, -27.4, 35]),
+    feature("edge", 5, [145.8401, -38.3802, 10]),
+    feature("high", 6.2, [140.9, 32.6, 22.4]),
+  ],
 };
 
 describe("selectQuakes", () => {
@@ -34,12 +46,18 @@ describe("selectQuakes", () => {
         magnitude: 5,
         place: "edge place",
         time: 1710000000000,
+        longitude: 145.8401,
+        latitude: -38.3802,
+        depthKm: 10,
       },
       {
         id: "high",
         magnitude: 6.2,
         place: "high place",
         time: 1710000000000,
+        longitude: 140.9,
+        latitude: 32.6,
+        depthKm: 22.4,
       },
     ]);
     expect(fetchSpy).not.toHaveBeenCalled();
