@@ -48,3 +48,7 @@ The "Still open after Day 2" note above described the tree at the squash merge. 
 - Missing geometry, a non-Point, or coordinates that are not three finite numbers throw `TypeError`.
 - `tests/parseQuakes.test.ts` expects the three fixture points. `tests/minMagnitude.test.ts` puts a Point on each in-memory feature. `npm test` still does not call USGS.
 - The README still describes `{ id, magnitude, place, time }` and does not yet show the location fields.
+
+## 2026-10-05 — Day 4 squash-merged
+
+Pull request #3, "Day 4: read longitude, latitude, and depth from geometry", was squash-merged into `main`. The merge commit is `87007f7c1b1e39178e06435596b5dda5989dc4a5`. It carries the Point fields on `parseQuakes`, the updated fixture expectations, and the in-memory min-magnitude Points. GitHub deleted `cursor/day4-quake-geometry-16ed` after the merge, so `main` holds one Day 4 commit rather than the branch commit plus a second copy.
