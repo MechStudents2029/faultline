@@ -82,8 +82,9 @@ Coordinate order is GeoJSON `[longitude, latitude, depth]`, not a latitude-first
 - `properties.mag` must be a finite number. It is returned as `magnitude`.
 - `properties.place` must be a non-empty string.
 - `properties.time` must be a finite number of epoch milliseconds. It is returned as `time` with the same numeric value. The parser does not turn it into an ISO-8601 string.
+- `geometry` must be a GeoJSON Point. `coordinates` must be three finite numbers, `[longitude, latitude, depth in km]`. They are returned as `longitude`, `latitude`, and `depthKm`. Missing geometry, a non-Point, a coordinate array of the wrong length, or a non-finite coordinate throws `TypeError`.
 
-Other `properties` fields (`title`, `magType`, `url`, `alert`, `sig`, `status`) are ignored. `geometry` is a Point `[longitude, latitude, depth]` and is not part of the Day 1 record.
+Other `properties` fields (`title`, `magType`, `url`, `alert`, `sig`, `status`) are ignored. The parser does not read an id from `properties`, and it does not rescale depth.
 
 ## Fixture
 
