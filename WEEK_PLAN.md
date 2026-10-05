@@ -45,3 +45,13 @@ Status: done, squash-merged to `main` in pull request #3
 The squash commit is `87007f7c1b1e39178e06435596b5dda5989dc4a5`. GitHub deleted `cursor/day4-quake-geometry-16ed`. `parseQuakes` returns `longitude`, `latitude`, and `depthKm` from each Point.
 
 `parseQuakes` reads each Feature `geometry`. A USGS Point stores `coordinates` as `[longitude, latitude, depth in km]`. The parsed record is `{ id, magnitude, place, time, longitude, latitude, depthKm }`. A feature with missing geometry, a non-Point, or coordinates that are not three finite numbers is rejected with `TypeError`. The fixture test and the in-memory min-magnitude collection both expect those fields. `npm test` still does not call USGS.
+
+## Day 5 — text summary
+
+Status: unstarted
+
+Day 4 closed the geometry item left at the end of Day 3. JSON stays the default stdout of `npm run quakes`. Day 5 adds `--format text`, parsed before `fetch` the same way as `--min-magnitude`. When the flag's value is `text`, the CLI prints one line per selected quake instead of the JSON array:
+
+`M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z`
+
+The line uses `magnitude`, `depthKm` (kilometers, the field Day 4 added), `place`, and `time` formatted as UTC. Longitude and latitude stay on the quake object and are not required on the text line. Omitting `--format`, or passing `--format json`, keeps today's JSON array. An unknown format throws `TypeError` before `fetch`. Tests build the lines from an in-memory quake list and do not call USGS. No new feed and no API key.
