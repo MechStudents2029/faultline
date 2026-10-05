@@ -21,7 +21,7 @@ npm install
 npm run quakes
 ```
 
-Each object is `{ id, magnitude, place, time }`. `time` is still USGS epoch milliseconds. A non-OK HTTP response writes `USGS significant-day feed failed: <status> <statusText>` to stderr and sets the exit code to 1.
+Each object is `{ id, magnitude, place, time, longitude, latitude, depthKm }`. `time` is still USGS epoch milliseconds. A non-OK HTTP response writes `USGS significant-day feed failed: <status> <statusText>` to stderr and sets the exit code to 1.
 
 Pass `--min-magnitude` after npm's `--` so the flag reaches the script instead of npm:
 
@@ -51,6 +51,24 @@ Omitting the flag returns a copy of every quake `parseQuakes` returned. `parseQu
 - A token that is not a finite number, such as `big`, throws `TypeError` (`--min-magnitude expects a finite number, received big`).
 
 Either message is written to stderr and the exit code is 1. The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`5`, `4.5`, `.5`, `1e1`).
+
+## Location fields
+
+`parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
+
+```json
+{
+  "id": "us1000sample1",
+  "magnitude": 6.2,
+  "place": "45 km SW of Copiapo, Chile",
+  "time": 1710000000000,
+  "longitude": -71.2,
+  "latitude": -27.4,
+  "depthKm": 35
+}
+```
+
+`longitude` and `latitude` are decimal degrees. `depthKm` is the third coordinate. The other two fixture events use the same keys: Korumburra is longitude `145.8401`, latitude `-38.3802`, depth `10`; Hachijo-jima is longitude `140.9`, latitude `32.6`, depth `22.4`.
 
 ## USGS feature shape
 
