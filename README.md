@@ -68,7 +68,9 @@ Either message is written to stderr and the exit code is 1. The accepted token i
 }
 ```
 
-`longitude` and `latitude` are decimal degrees. `depthKm` is the third coordinate. The other two fixture events use the same keys: Korumburra is longitude `145.8401`, latitude `-38.3802`, depth `10`; Hachijo-jima is longitude `140.9`, latitude `32.6`, depth `22.4`.
+`longitude` and `latitude` are decimal degrees. The other two fixture events use the same keys: Korumburra is longitude `145.8401`, latitude `-38.3802`, depth `10`; Hachijo-jima is longitude `140.9`, latitude `32.6`, depth `22.4`.
+
+`depthKm` is kilometers, the unit USGS stores in the third coordinate. It is not meters and it is not feet. A positive value is below the surface; the parser does not convert or abs the number. The Chile sample's `35` is 35 km down, the Korumburra sample's `10` is 10 km down, and the Hachijo-jima sample's `22.4` is 22.4 km down.
 
 ## USGS feature shape
 
