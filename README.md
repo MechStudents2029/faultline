@@ -68,6 +68,8 @@ M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z
 
 That line is magnitude, then `depthKm` with a `km` suffix, then `place`, then `time` formatted as a UTC ISO-8601 string (`Date.toISOString()`). Two spaces separate those four fields. Longitude and latitude stay on the quake object and are not printed on the line. JSON output still leaves `time` as epoch milliseconds; only the text line converts it.
 
+The text line also omits `id`. JSON still prints all seven fields: `id`, `magnitude`, `place`, `time`, `longitude`, `latitude`, and `depthKm`. Text keeps four of them: `magnitude`, `depthKm`, `place`, and `time`. `parseQuakes` still returns epoch milliseconds. The ISO conversion lives only in `renderQuakes` when the format is `text`.
+
 `--format` with no following token throws `TypeError` (`--format requires json or text`). A token other than `json` or `text`, such as `csv`, throws `TypeError` (`--format expects json or text, received csv`). Either failure happens before `fetch`, and the message is written to stderr with exit code 1.
 
 `readFormat` uses the same argv shape as `readMinMagnitude`: the flag is its own token, and the value is the next token. `--format=text` is not that flag, so it leaves the output as JSON. The value is case-sensitive. `--format TEXT` throws `TypeError` (`--format expects json or text, received TEXT`). `--format JSON` throws the same sentence with `JSON`. Those checks also run before `fetch`.
