@@ -146,6 +146,8 @@ npm run typecheck
 
 `tests/formatQuakes.test.ts` also stays off the network. It builds text lines from an in-memory quake list, including `M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z`, checks that `--format json` and an omitted flag still render two-space JSON, checks that `--format text` composed with `--min-magnitude 5` drops the 4.7 event, and expects `TypeError` from `readFormat(["--format"])` and from `readFormat(["--format", "csv"])`. Those tests spy on `globalThis.fetch` and assert it was not called. `npm test` runs those twelve tests in three files.
 
+The same file locks the three in-memory lines `M 4.7  35 km  low place  2024-03-09T16:00:00.000Z`, `M 5  10 km  edge place  2024-03-09T16:00:00.000Z`, and `M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z`. It asserts those lines do not contain the longitudes `-71.2` or `145.8401`. `renderQuakes([], "text")` is an empty string, while the JSON expectation is `JSON.stringify(quakes, null, 2)` plus a trailing newline. The composition case passes `["--min-magnitude", "5", "--format", "text"]` to both `selectQuakes` and `readFormat`, so the 4.7 line is absent. None of that calls USGS.
+
 `npm run typecheck` runs `tsc --noEmit`. `tsconfig.json` enables `strict`, targets ES2022, and resolves modules with `NodeNext`. It typechecks `src`, `tests`, and `vitest.config.ts`, and it does not emit JavaScript.
 
 ## Free USGS feed (no API key)
