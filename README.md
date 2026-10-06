@@ -70,6 +70,8 @@ That line is magnitude, then `depthKm` with a `km` suffix, then `place`, then `t
 
 `--format` with no following token throws `TypeError` (`--format requires json or text`). A token other than `json` or `text`, such as `csv`, throws `TypeError` (`--format expects json or text, received csv`). Either failure happens before `fetch`, and the message is written to stderr with exit code 1.
 
+`readFormat` uses the same argv shape as `readMinMagnitude`: the flag is its own token, and the value is the next token. `--format=text` is not that flag, so it leaves the output as JSON. The value is case-sensitive. `--format TEXT` throws `TypeError` (`--format expects json or text, received TEXT`). `--format JSON` throws the same sentence with `JSON`. Those checks also run before `fetch`.
+
 The flag composes with `--min-magnitude`. The filter runs first, then the chosen format prints whatever remains:
 
 ```bash
