@@ -1,3 +1,4 @@
+import { readFormat, renderQuakes } from "./formatQuakes.js";
 import { parseQuakes } from "./parseQuakes.js";
 import { readMinMagnitude, selectQuakes } from "./selectQuakes.js";
 
@@ -18,9 +19,10 @@ async function loadSignificantDay(): Promise<unknown> {
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   readMinMagnitude(argv);
+  const format = readFormat(argv);
 
   const quakes = selectQuakes(parseQuakes(await loadSignificantDay()), argv);
-  process.stdout.write(`${JSON.stringify(quakes, null, 2)}\n`);
+  process.stdout.write(renderQuakes(quakes, format));
 }
 
 main().catch((error: unknown) => {

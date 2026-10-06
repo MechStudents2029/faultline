@@ -56,3 +56,10 @@ Pull request #3, "Day 4: read longitude, latitude, and depth from geometry", was
 ## 2026-10-05 — README notes after the Day 4 merge
 
 The Day 4 geometry entry above described the tree at the squash merge, when the README still showed `{ id, magnitude, place, time }`. The README on `main` now shows an example object with `longitude`, `latitude`, and `depthKm`, states that `depthKm` is kilometers (positive down, not meters), and states that `coordinates` are `[longitude, latitude, depth]`. The fixture table includes those three columns. The test notes describe the offline geometry `TypeError` cases and the Points on the in-memory min-magnitude features. `WEEK_PLAN.md` records the squash commit and sketches Day 5 (`--format text`) as unstarted. No new feed and no API key.
+
+## 2026-10-06 — Day 5 text summary
+
+- `npm run quakes` accepts `--format json|text`, read from argv before `fetch`. Omitting the flag or passing `json` still prints the two-space JSON array.
+- `--format text` prints one line per selected quake: magnitude, `depthKm` in km, place, and `time` as a UTC ISO string.
+- A missing or unknown format throws `TypeError` before `fetch`. The flag composes with `--min-magnitude`.
+- `tests/formatQuakes.test.ts` builds those lines from an in-memory quake list and spies on `fetch`. No new feed and no API key.
