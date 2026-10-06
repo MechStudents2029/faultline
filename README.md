@@ -76,6 +76,12 @@ The flag composes with `--min-magnitude`. The filter runs first, then the chosen
 npm run quakes -- --min-magnitude 5 --format text
 ```
 
+When that selection is empty, `--format text` writes no lines and does not write `[]`. Stdout is empty and the exit code stays 0. A quiet significant day does that, and so does a day whose events are all below `--min-magnitude`. `--format json` still prints the empty array with a trailing newline:
+
+```text
+[]
+```
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
