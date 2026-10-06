@@ -48,7 +48,9 @@ The squash commit is `87007f7c1b1e39178e06435596b5dda5989dc4a5`. GitHub deleted 
 
 ## Day 5 — text summary
 
-Status: done
+Status: done, squash-merged to `main` in pull request #4
+
+The squash commit is `b3280495136eeaa6a832e45c411e7eb77b51cba4`. GitHub deleted `cursor/day5-format-text-e592`. `readFormat` runs before `fetch`. `--format text` prints one line per selected quake. `--format json` and an omitted flag keep the two-space JSON array.
 
 Day 4 closed the geometry item left at the end of Day 3. JSON stays the default stdout of `npm run quakes`. Day 5 adds `--format text`, parsed before `fetch` the same way as `--min-magnitude`. When the flag's value is `text`, the CLI prints one line per selected quake instead of the JSON array:
 
