@@ -72,3 +72,7 @@ Pull request #4, "Day 5: print a text summary with --format text", was squash-me
 
 - Day 6 has not started. The CLI does not take `--limit`, and it does not sort by magnitude. Selected quakes stay in feed order, and `--format text` prints every one of them.
 - The text renderer does not add a header row. An empty selection prints no lines. JSON still prints `[]`.
+
+## 2026-10-06 — README notes after the Day 5 merge
+
+The Day 5 text-summary entry above described the tree at the squash merge. The README on `main` now records that an empty `--format text` selection prints no lines (JSON still prints `[]`), that `--format` is a separate case-sensitive token (`--format=text`, `TEXT`, and `JSON` do not select a format), and that the text line drops `id` as well as longitude and latitude. Magnitude and depth use their default decimal text, and `place` is copied verbatim, including the spaces in the Chile sample. The README also shows `npm run quakes -- --format text --min-magnitude 5` as the same selection as the other flag order. The test notes list the three in-memory lines (`low` at 4.7, `edge` at 5, `high` at 6.2) and the empty-string text case. `WEEK_PLAN.md` records squash commit `b3280495136eeaa6a832e45c411e7eb77b51cba4` and sketches Day 6 (`--limit`, optionally `--sort magnitude`) as unstarted. No new feed and no API key.
