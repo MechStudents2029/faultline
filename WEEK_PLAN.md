@@ -48,7 +48,7 @@ The squash commit is `87007f7c1b1e39178e06435596b5dda5989dc4a5`. GitHub deleted 
 
 ## Day 5 — text summary
 
-Status: unstarted
+Status: done
 
 Day 4 closed the geometry item left at the end of Day 3. JSON stays the default stdout of `npm run quakes`. Day 5 adds `--format text`, parsed before `fetch` the same way as `--min-magnitude`. When the flag's value is `text`, the CLI prints one line per selected quake instead of the JSON array:
 

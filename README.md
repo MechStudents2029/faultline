@@ -1,6 +1,6 @@
 # faultline
 
-Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point.
+Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake.
 
 ## Project goals
 
@@ -10,6 +10,7 @@ Faultline is a one-week resume CLI. Someone should be able to clone the repo and
 - Day 2, done: `npm run quakes` fetches the live significant-day feed, prints JSON, and accepts `--min-magnitude` to hide smaller events.
 - Day 3, noted in this README: `npm run quakes`, `--min-magnitude`, the empty-feed `[]` output, the inclusive filter, the offline tests, and the no-key feed URL.
 - Day 4, done: `longitude`, `latitude`, and `depthKm` come from the Point. A missing or malformed geometry throws `TypeError`. The CLI prints those fields on every quake.
+- Day 5, done: `--format text` prints one line per selected quake (magnitude, depth in km, place, UTC time). Omitting the flag, or `--format json`, keeps the JSON array.
 
 `parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
 
@@ -52,6 +53,28 @@ Omitting the flag returns a copy of every quake `parseQuakes` returned. `parseQu
 - A token that is not a finite number, such as `big`, throws `TypeError` (`--min-magnitude expects a finite number, received big`).
 
 Either message is written to stderr and the exit code is 1. The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`5`, `4.5`, `.5`, `1e1`).
+
+## `--format` output
+
+`readFormat` runs on `process.argv` before `fetch`, the same way `readMinMagnitude` does. Omitting `--format`, or passing `--format json`, writes the quake array as two-space JSON with a trailing newline. `--format text` writes one line per selected quake instead:
+
+```bash
+npm run quakes -- --format text
+```
+
+```text
+M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z
+```
+
+That line is magnitude, then `depthKm` with a `km` suffix, then `place`, then `time` formatted as a UTC ISO-8601 string (`Date.toISOString()`). Two spaces separate those four fields. Longitude and latitude stay on the quake object and are not printed on the line. JSON output still leaves `time` as epoch milliseconds; only the text line converts it.
+
+`--format` with no following token throws `TypeError` (`--format requires json or text`). A token other than `json` or `text`, such as `csv`, throws `TypeError` (`--format expects json or text, received csv`). Either failure happens before `fetch`, and the message is written to stderr with exit code 1.
+
+The flag composes with `--min-magnitude`. The filter runs first, then the chosen format prints whatever remains:
+
+```bash
+npm run quakes -- --min-magnitude 5 --format text
+```
 
 ## Location fields
 
@@ -113,7 +136,9 @@ npm run typecheck
 
 `npm test` runs `vitest run` once. `vitest.config.ts` sets `environment` to `node` and includes `tests/**/*.test.ts`. The suite reads `fixtures/significant_day.sample.geojson` with `readFileSync` and `JSON.parse`. It checks the three quake records, including `longitude`, `latitude`, and `depthKm`, checks that the first `time` is still `1710000000000`, and checks that `parseQuakes({ type: "Feature", id: "x" })` throws `TypeError`. A fourth test builds an in-memory feature and expects `TypeError` when geometry is missing, when it is a LineString, when the coordinate array has only two numbers, and when depth is a string. That command does not open a socket.
 
-`tests/minMagnitude.test.ts` does not read the fixture and does not call USGS. It builds an in-memory FeatureCollection with magnitudes 4.7 (`low`), 5 (`edge`), and 6.2 (`high`). Each feature has a Point: `low` is `[-71.2, -27.4, 35]`, `edge` is `[145.8401, -38.3802, 10]`, and `high` is `[140.9, 32.6, 22.4]`. `selectQuakes` with `--min-magnitude 5` keeps `edge` and `high` and drops `low`, which checks the inclusive boundary, and the kept objects still carry `longitude`, `latitude`, and `depthKm`. A second test omits the flag and expects every parsed quake. A third test expects `TypeError` from `readMinMagnitude(["--min-magnitude"])` and from `readMinMagnitude(["--min-magnitude", "big"])`. The filter test spies on `globalThis.fetch` and asserts it was not called. `npm test` runs those seven tests in two files.
+`tests/minMagnitude.test.ts` does not read the fixture and does not call USGS. It builds an in-memory FeatureCollection with magnitudes 4.7 (`low`), 5 (`edge`), and 6.2 (`high`). Each feature has a Point: `low` is `[-71.2, -27.4, 35]`, `edge` is `[145.8401, -38.3802, 10]`, and `high` is `[140.9, 32.6, 22.4]`. `selectQuakes` with `--min-magnitude 5` keeps `edge` and `high` and drops `low`, which checks the inclusive boundary, and the kept objects still carry `longitude`, `latitude`, and `depthKm`. A second test omits the flag and expects every parsed quake. A third test expects `TypeError` from `readMinMagnitude(["--min-magnitude"])` and from `readMinMagnitude(["--min-magnitude", "big"])`. The filter test spies on `globalThis.fetch` and asserts it was not called.
+
+`tests/formatQuakes.test.ts` also stays off the network. It builds text lines from an in-memory quake list, including `M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z`, checks that `--format json` and an omitted flag still render two-space JSON, checks that `--format text` composed with `--min-magnitude 5` drops the 4.7 event, and expects `TypeError` from `readFormat(["--format"])` and from `readFormat(["--format", "csv"])`. Those tests spy on `globalThis.fetch` and assert it was not called. `npm test` runs those twelve tests in three files.
 
 `npm run typecheck` runs `tsc --noEmit`. `tsconfig.json` enables `strict`, targets ES2022, and resolves modules with `NodeNext`. It typechecks `src`, `tests`, and `vitest.config.ts`, and it does not emit JavaScript.
 
@@ -123,4 +148,4 @@ npm run typecheck
 
 https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson
 
-USGS serves that summary to anonymous clients. The body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day. The same URL is the `SIGNIFICANT_DAY_URL` constant in `src/quakes.ts` and `metadata.url` on the fixture. `npm test` still reads `fixtures/significant_day.sample.geojson` from disk, so a USGS outage or a missing network does not fail the suite. The CLI is the only path that opens a socket, and only after `--min-magnitude` parses.
+USGS serves that summary to anonymous clients. The body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day. The same URL is the `SIGNIFICANT_DAY_URL` constant in `src/quakes.ts` and `metadata.url` on the fixture. `npm test` still reads `fixtures/significant_day.sample.geojson` from disk, so a USGS outage or a missing network does not fail the suite. The CLI is the only path that opens a socket, and only after `--min-magnitude` and `--format` parse.
