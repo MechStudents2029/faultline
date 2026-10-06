@@ -57,3 +57,9 @@ Day 4 closed the geometry item left at the end of Day 3. JSON stays the default 
 `M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z`
 
 The line uses `magnitude`, `depthKm` (kilometers, the field Day 4 added), `place`, and `time` formatted as UTC. Longitude and latitude stay on the quake object and are not required on the text line. Omitting `--format`, or passing `--format json`, keeps today's JSON array. An unknown format throws `TypeError` before `fetch`. Tests build the lines from an in-memory quake list and do not call USGS. No new feed and no API key.
+
+## Day 6 — limit or sort
+
+Status: unstarted
+
+Day 5 prints every selected quake, in feed order, as JSON or text. Day 6 can add `--limit <count>`, parsed before `fetch` the same way as `--min-magnitude` and `--format`. A positive integer would keep the first N selected quakes. Omitting the flag would keep the whole list. A missing or non-integer value would throw `TypeError` before `fetch`. An optional follow-on in the same day is `--sort magnitude`, which would order the selected list by magnitude descending before the limit is applied. Both stay on the existing significant-day feed: no new URL and no API key. Tests would cap or sort the same in-memory quake list the Day 5 suite uses and would spy on `fetch`.
