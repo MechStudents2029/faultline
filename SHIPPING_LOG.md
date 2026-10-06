@@ -63,3 +63,7 @@ The Day 4 geometry entry above described the tree at the squash merge, when the 
 - `--format text` prints one line per selected quake: magnitude, `depthKm` in km, place, and `time` as a UTC ISO string.
 - A missing or unknown format throws `TypeError` before `fetch`. The flag composes with `--min-magnitude`.
 - `tests/formatQuakes.test.ts` builds those lines from an in-memory quake list and spies on `fetch`. No new feed and no API key.
+
+## 2026-10-06 — Day 5 squash-merged
+
+Pull request #4, "Day 5: print a text summary with --format text", was squash-merged into `main`. The merge commit is `b3280495136eeaa6a832e45c411e7eb77b51cba4`. It carries `src/formatQuakes.ts`, `tests/formatQuakes.test.ts`, the `--format` read in `src/quakes.ts`, and the README example line. GitHub deleted `cursor/day5-format-text-e592` after the merge, so `main` holds one Day 5 commit rather than the branch commit plus a second copy.
