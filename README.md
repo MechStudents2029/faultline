@@ -70,6 +70,8 @@ That line is magnitude, then `depthKm` with a `km` suffix, then `place`, then `t
 
 The text line also omits `id`. JSON still prints all seven fields: `id`, `magnitude`, `place`, `time`, `longitude`, `latitude`, and `depthKm`. Text keeps four of them: `magnitude`, `depthKm`, `place`, and `time`. `parseQuakes` still returns epoch milliseconds. The ISO conversion lives only in `renderQuakes` when the format is `text`.
 
+Magnitude and depth use JavaScript's default number text, not a fixed number of decimal places. The Chile sample's magnitude `6.2` stays `6.2` and its depth `35` stays `35`. The Hachijo-jima sample's depth `22.4` stays `22.4`. The depth suffix is one space and then `km`, as in `35 km`. `place` is copied as stored, including the single spaces and the comma in `45 km SW of Copiapo, Chile`. The two-space gaps sit only between the four fields, so a place that contains spaces stays one field.
+
 `--format` with no following token throws `TypeError` (`--format requires json or text`). A token other than `json` or `text`, such as `csv`, throws `TypeError` (`--format expects json or text, received csv`). Either failure happens before `fetch`, and the message is written to stderr with exit code 1.
 
 `readFormat` uses the same argv shape as `readMinMagnitude`: the flag is its own token, and the value is the next token. `--format=text` is not that flag, so it leaves the output as JSON. The value is case-sensitive. `--format TEXT` throws `TypeError` (`--format expects json or text, received TEXT`). `--format JSON` throws the same sentence with `JSON`. Those checks also run before `fetch`.
