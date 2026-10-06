@@ -82,6 +82,14 @@ The flag composes with `--min-magnitude`. The filter runs first, then the chosen
 npm run quakes -- --min-magnitude 5 --format text
 ```
 
+Either flag may come first. Both are read from the full argv list before `fetch`, so this prints the same lines as the command above:
+
+```bash
+npm run quakes -- --format text --min-magnitude 5
+```
+
+`readMinMagnitude` and `readFormat` each look up their own flag. One flag's value is not consumed by the other.
+
 When that selection is empty, `--format text` writes no lines and does not write `[]`. Stdout is empty and the exit code stays 0. A quiet significant day does that, and so does a day whose events are all below `--min-magnitude`. `--format json` still prints the empty array with a trailing newline:
 
 ```text
