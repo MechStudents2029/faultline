@@ -87,3 +87,12 @@ The Day 5 text-summary entry above described the tree at the squash merge. The R
 ## 2026-10-07 — Day 6 squash-merged
 
 Pull request #5, "Day 6: limit and sort selected quakes", was squash-merged into `main`. The merge commit is `91223f32b1b3efb1c9a7c40f2063cdee47c96673`. It carries `readLimit` and `readSort` in `src/selectQuakes.ts`, the calls that run before `fetch` in `src/quakes.ts`, `tests/limitSort.test.ts`, and the README usage for `--limit` and `--sort`. `cursor/day6-limit-sort-55a3` was deleted after the merge, so `main` holds one Day 6 commit rather than the branch commit plus a second copy.
+
+## Still open after the Day 6 merge
+
+- Day 7 has not started. The CLI does not take `--place`, so a place substring cannot drop quakes before the sort and the limit.
+- The text renderer still does not add a header row. An empty selection prints no lines. JSON still prints `[]`.
+
+## 2026-10-07 — README notes after the Day 6 merge
+
+The Day 6 limit-and-sort entry above described the tree at the squash merge. The README on `main` now records the `--limit` tokens the reader rejects (`0`, `-1`, `1.5`, `2.0`, `+3`, `01`, `big`, `1e1`, and an unsafe integer such as `9007199254740993`), that `--sort=magnitude` and `MAGNITUDE` do not select a sort, that a limit larger than the list keeps every remaining quake, and that equal magnitudes stay in feed order (`largest`, `first`, `second`). It shows that `--sort magnitude --limit 2 --format text` and the swapped flag order print the same lines, the two largest that remain after the magnitude filter. The in-memory text sample is `high` then `edge`, and the JSON sample for `--limit 1` after that sort is one object with `time` still in epoch milliseconds. The test notes list the eleven `tests/limitSort.test.ts` cases and the fetch spies. `WEEK_PLAN.md` records squash commit `91223f32b1b3efb1c9a7c40f2063cdee47c96673` and sketches Day 7 (`--place`) as unstarted. No new feed and no API key.
