@@ -114,6 +114,8 @@ A missing `--limit` value throws `TypeError` (`--limit requires a positive integ
 
 `readSort` uses the same argv shape as `readLimit`: the flag is its own token, and the value is the next token. `--sort=magnitude` is not that flag, so the list stays in feed order. The value is case-sensitive. `--sort MAGNITUDE` throws `TypeError` (`--sort expects magnitude, received MAGNITUDE`). `--sort time` throws the same sentence with `time`. Those checks also run before `fetch`.
 
+`--limit` counts rows after the filter and the sort, not features in the raw feed. On the three-quake in-memory list, `--limit 9` returns `low`, `edge`, and `high` because the count is larger than the list. `--min-magnitude 5 --limit 1` returns only `edge`: `low` is already gone, and feed order of what remains puts `edge` first. When the filter removes every quake, sort and limit both see an empty list. `--format json` still prints `[]` with a trailing newline, and `--format text` still prints no lines.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
