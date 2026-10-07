@@ -118,6 +118,15 @@ A missing `--limit` value throws `TypeError` (`--limit requires a positive integ
 
 `--sort magnitude` is a stable descending sort. Two quakes with the same magnitude keep the order they had in the feed. The tie test builds `first` and `second` at magnitude 5, then `largest` at 6.2. After `--sort magnitude` the ids are `largest`, `first`, `second`. The sort copies the list first, so the array returned by `parseQuakes` stays in feed order.
 
+`--limit`, `--sort`, `--min-magnitude`, and `--format` each look up their own flag. One flag's value is not consumed by the other, and the order of the flags does not change the selection. These two commands select the same quakes, the two largest that remain after the magnitude filter, and print the same text lines:
+
+```bash
+npm run quakes -- --sort magnitude --limit 2 --format text
+npm run quakes -- --format text --limit 2 --sort magnitude
+```
+
+Sort still runs before the limit. Putting `--limit` earlier in argv does not keep the first two feed rows when `--sort magnitude` is also set.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
