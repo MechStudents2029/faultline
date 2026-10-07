@@ -116,6 +116,8 @@ A missing `--limit` value throws `TypeError` (`--limit requires a positive integ
 
 `--limit` counts rows after the filter and the sort, not features in the raw feed. On the three-quake in-memory list, `--limit 9` returns `low`, `edge`, and `high` because the count is larger than the list. `--min-magnitude 5 --limit 1` returns only `edge`: `low` is already gone, and feed order of what remains puts `edge` first. When the filter removes every quake, sort and limit both see an empty list. `--format json` still prints `[]` with a trailing newline, and `--format text` still prints no lines.
 
+`--sort magnitude` is a stable descending sort. Two quakes with the same magnitude keep the order they had in the feed. The tie test builds `first` and `second` at magnitude 5, then `largest` at 6.2. After `--sort magnitude` the ids are `largest`, `first`, `second`. The sort copies the list first, so the array returned by `parseQuakes` stays in feed order.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
