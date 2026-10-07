@@ -127,6 +127,15 @@ npm run quakes -- --format text --limit 2 --sort magnitude
 
 Sort still runs before the limit. Putting `--limit` earlier in argv does not keep the first two feed rows when `--sort magnitude` is also set.
 
+With that in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format text` prints:
+
+```text
+M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
+M 5  10 km  edge place  2024-03-09T16:00:00.000Z
+```
+
+`--sort magnitude --limit 1 --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON. The text line is the only place that turns it into `2024-03-09T16:00:00.000Z`. The `low` quake is not in either sample.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
