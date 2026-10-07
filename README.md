@@ -112,6 +112,8 @@ A missing `--limit` value throws `TypeError` (`--limit requires a positive integ
 
 `readLimit` accepts a decimal integer written as digits, with no sign, no fraction, and no exponent. The value has to be at least 1, and it has to be a safe integer so `Number` does not round it. The tests reject `0`, `-1`, `1.5`, `2.0`, `+3`, `01`, and `big`. `2.0` is a whole number written with a fraction, and `+3` is positive, but neither token is that digit form. `01` has a leading zero, so it is rejected even though the numeric value is 1. `1e1` is rejected the same way. A digit string that is not a safe integer, such as `9007199254740993`, is rejected because `Number` would round it. The received token is copied into the message, so `--limit 1.5` throws `--limit expects a positive integer, received 1.5`.
 
+`readSort` uses the same argv shape as `readLimit`: the flag is its own token, and the value is the next token. `--sort=magnitude` is not that flag, so the list stays in feed order. The value is case-sensitive. `--sort MAGNITUDE` throws `TypeError` (`--sort expects magnitude, received MAGNITUDE`). `--sort time` throws the same sentence with `time`. Those checks also run before `fetch`.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
