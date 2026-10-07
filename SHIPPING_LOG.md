@@ -83,3 +83,7 @@ The Day 5 text-summary entry above described the tree at the squash merge. The R
 - `--limit` keeps the first N quakes after the min-magnitude filter. Omitting it keeps the whole list. A missing, zero, negative, or non-integer value throws `TypeError`.
 - `--sort magnitude` orders by magnitude descending before the limit. Omitting it keeps feed order. Any other value throws `TypeError`.
 - `--format json` and `--format text` print that same selected list. `tests/limitSort.test.ts` uses an in-memory list and spies on `fetch`. No new feed and no API key.
+
+## 2026-10-07 — Day 6 squash-merged
+
+Pull request #5, "Day 6: limit and sort selected quakes", was squash-merged into `main`. The merge commit is `91223f32b1b3efb1c9a7c40f2063cdee47c96673`. It carries `readLimit` and `readSort` in `src/selectQuakes.ts`, the calls that run before `fetch` in `src/quakes.ts`, `tests/limitSort.test.ts`, and the README usage for `--limit` and `--sort`. `cursor/day6-limit-sort-55a3` was deleted after the merge, so `main` holds one Day 6 commit rather than the branch commit plus a second copy.
