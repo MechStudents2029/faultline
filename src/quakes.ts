@@ -1,6 +1,11 @@
 import { readFormat, renderQuakes } from "./formatQuakes.js";
 import { parseQuakes } from "./parseQuakes.js";
-import { readMinMagnitude, selectQuakes } from "./selectQuakes.js";
+import {
+  readLimit,
+  readMinMagnitude,
+  readSort,
+  selectQuakes,
+} from "./selectQuakes.js";
 
 const SIGNIFICANT_DAY_URL =
   "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson";
@@ -19,6 +24,8 @@ async function loadSignificantDay(): Promise<unknown> {
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   readMinMagnitude(argv);
+  readLimit(argv);
+  readSort(argv);
   const format = readFormat(argv);
 
   const quakes = selectQuakes(parseQuakes(await loadSignificantDay()), argv);

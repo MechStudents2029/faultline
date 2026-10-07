@@ -60,6 +60,6 @@ The line uses `magnitude`, `depthKm` (kilometers, the field Day 4 added), `place
 
 ## Day 6 — limit or sort
 
-Status: unstarted
+Status: done
 
-Day 5 prints every selected quake, in feed order, as JSON or text. Day 6 can add `--limit <count>`, parsed before `fetch` the same way as `--min-magnitude` and `--format`. A positive integer would keep the first N selected quakes. Omitting the flag would keep the whole list. A missing or non-integer value would throw `TypeError` before `fetch`. An optional follow-on in the same day is `--sort magnitude`, which would order the selected list by magnitude descending before the limit is applied. Both stay on the existing significant-day feed: no new URL and no API key. Tests would cap or sort the same in-memory quake list the Day 5 suite uses and would spy on `fetch`.
+Day 5 prints every selected quake, in feed order, as JSON or text. Day 6 adds `--limit <count>`, parsed before `fetch` the same way as `--min-magnitude` and `--format`. A positive integer keeps the first N selected quakes after the min-magnitude filter. Omitting the flag keeps the whole list. A missing, zero, negative, or non-integer value throws `TypeError` before `fetch`. `--sort magnitude` orders that list by magnitude descending before the limit is applied. Omitting `--sort` keeps feed order. Any other sort value throws `TypeError` before `fetch`. Both stay on the existing significant-day feed: no new URL and no API key. Tests cap or sort an in-memory quake list and spy on `fetch`.

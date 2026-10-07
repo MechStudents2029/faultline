@@ -76,3 +76,10 @@ Pull request #4, "Day 5: print a text summary with --format text", was squash-me
 ## 2026-10-06 — README notes after the Day 5 merge
 
 The Day 5 text-summary entry above described the tree at the squash merge. The README on `main` now records that an empty `--format text` selection prints no lines (JSON still prints `[]`), that `--format` is a separate case-sensitive token (`--format=text`, `TEXT`, and `JSON` do not select a format), and that the text line drops `id` as well as longitude and latitude. Magnitude and depth use their default decimal text, and `place` is copied verbatim, including the spaces in the Chile sample. The README also shows `npm run quakes -- --format text --min-magnitude 5` as the same selection as the other flag order. The test notes list the three in-memory lines (`low` at 4.7, `edge` at 5, `high` at 6.2) and the empty-string text case. `WEEK_PLAN.md` records squash commit `b3280495136eeaa6a832e45c411e7eb77b51cba4` and sketches Day 6 (`--limit`, optionally `--sort magnitude`) as unstarted. No new feed and no API key.
+
+## 2026-10-07 — Day 6 limit and sort
+
+- `npm run quakes` accepts `--limit <count>` and `--sort magnitude`, both read from argv before `fetch`.
+- `--limit` keeps the first N quakes after the min-magnitude filter. Omitting it keeps the whole list. A missing, zero, negative, or non-integer value throws `TypeError`.
+- `--sort magnitude` orders by magnitude descending before the limit. Omitting it keeps feed order. Any other value throws `TypeError`.
+- `--format json` and `--format text` print that same selected list. `tests/limitSort.test.ts` uses an in-memory list and spies on `fetch`. No new feed and no API key.
