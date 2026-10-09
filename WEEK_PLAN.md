@@ -68,6 +68,8 @@ Day 5 prints every selected quake, in feed order, as JSON or text. Day 6 adds `-
 
 ## Day 7 — place filter
 
-Status: done
+Status: done, squash-merged to `main` in pull request #6
+
+The squash commit is `495b7e2969cadb7c607a991e00cd206f346b914e`. `cursor/day7-place-filter-e4a2` was deleted after the merge. `readPlace` runs before `fetch`. `--place` keeps a quake when its `place` contains the text, case-sensitive. Omitting the flag keeps every place. A missing value throws `TypeError` before `fetch`.
 
 Day 6 can drop, reorder, and cap the selected list, and it still prints every place that survived. Day 7 adds `--place <text>`, parsed before `fetch` the same way as `--limit`, `--sort`, `--min-magnitude`, and `--format`. A quake stays when its `place` contains that text, case-sensitive. Omitting the flag keeps every place. A missing value throws `TypeError` before `fetch`. The filter runs alongside `--min-magnitude`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests filter an in-memory quake list and spy on `fetch`.
