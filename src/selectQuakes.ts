@@ -1,6 +1,7 @@
 import type { Quake } from "./parseQuakes.js";
 
 const MIN_MAGNITUDE_FLAG = "--min-magnitude";
+const PLACE_FLAG = "--place";
 const LIMIT_FLAG = "--limit";
 const SORT_FLAG = "--sort";
 
@@ -54,6 +55,25 @@ export function readLimit(argv: readonly string[]): number | undefined {
 }
 
 /**
+ * Read `--place <text>` from CLI args.
+ * Returns undefined when the flag is omitted, which keeps every place.
+ * A missing value throws `TypeError`.
+ */
+export function readPlace(argv: readonly string[]): string | undefined {
+  const index = argv.indexOf(PLACE_FLAG);
+  if (index === -1) {
+    return undefined;
+  }
+
+  const raw = argv[index + 1];
+  if (raw === undefined) {
+    throw new TypeError("--place requires text");
+  }
+
+  return raw;
+}
+
+/**
  * Read `--sort magnitude` from CLI args.
  * Returns undefined when the flag is omitted, which keeps feed order.
  */
@@ -77,22 +97,28 @@ export function readSort(argv: readonly string[]): QuakeSort | undefined {
 
 /**
  * CLI selection on a `parseQuakes` result.
- * Drops quakes below `--min-magnitude`, optionally orders by magnitude
- * descending, then keeps the first `--limit` rows. Omitted flags keep
- * the whole list in feed order.
+ * Drops quakes below `--min-magnitude` and quakes whose `place` does not
+ * contain `--place`, optionally orders by magnitude descending, then keeps
+ * the first `--limit` rows. Omitted flags keep the whole list in feed order.
  */
 export function selectQuakes(
   quakes: readonly Quake[],
   argv: readonly string[],
 ): Quake[] {
   const minMagnitude = readMinMagnitude(argv);
+  const place = readPlace(argv);
   const limit = readLimit(argv);
   const sort = readSort(argv);
 
-  const selected =
+  const byMagnitude =
     minMagnitude === undefined
       ? [...quakes]
       : quakes.filter((quake) => quake.magnitude >= minMagnitude);
+
+  const selected =
+    place === undefined
+      ? byMagnitude
+      : byMagnitude.filter((quake) => quake.place.includes(place));
 
   if (sort === "magnitude") {
     selected.sort((left, right) => right.magnitude - left.magnitude);

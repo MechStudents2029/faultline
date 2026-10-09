@@ -96,3 +96,10 @@ Pull request #5, "Day 6: limit and sort selected quakes", was squash-merged into
 ## 2026-10-07 — README notes after the Day 6 merge
 
 The Day 6 limit-and-sort entry above described the tree at the squash merge. The README on `main` now records the `--limit` tokens the reader rejects (`0`, `-1`, `1.5`, `2.0`, `+3`, `01`, `big`, `1e1`, and an unsafe integer such as `9007199254740993`), that `--sort=magnitude` and `MAGNITUDE` do not select a sort, that a limit larger than the list keeps every remaining quake, and that equal magnitudes stay in feed order (`largest`, `first`, `second`). It shows that `--sort magnitude --limit 2 --format text` and the swapped flag order print the same lines, the two largest that remain after the magnitude filter. The in-memory text sample is `high` then `edge`, and the JSON sample for `--limit 1` after that sort is one object with `time` still in epoch milliseconds. The test notes list the eleven `tests/limitSort.test.ts` cases and the fetch spies. `WEEK_PLAN.md` records squash commit `91223f32b1b3efb1c9a7c40f2063cdee47c96673` and sketches Day 7 (`--place`) as unstarted. No new feed and no API key.
+
+## 2026-10-09 — Day 7 place filter
+
+- `npm run quakes` accepts `--place <text>`, read from argv before `fetch`.
+- A quake stays when `place` contains that text, case-sensitive. Omitting the flag keeps every place. A missing value throws `TypeError`.
+- The filter runs with `--min-magnitude`, before `--sort magnitude` and `--limit`.
+- `tests/place.test.ts` uses an in-memory list and spies on `fetch`. No new feed and no API key.

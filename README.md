@@ -1,6 +1,6 @@
 # faultline
 
-Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`.
+Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`.
 
 ## Project goals
 
@@ -12,6 +12,7 @@ Faultline is a one-week resume CLI. Someone should be able to clone the repo and
 - Day 4, done: `longitude`, `latitude`, and `depthKm` come from the Point. A missing or malformed geometry throws `TypeError`. The CLI prints those fields on every quake.
 - Day 5, done: `--format text` prints one line per selected quake (magnitude, depth in km, place, UTC time). Omitting the flag, or `--format json`, keeps the JSON array.
 - Day 6, done: `--limit <count>` keeps the first N selected quakes, and `--sort magnitude` orders by magnitude descending before that limit. Omitting either flag keeps the whole list in feed order.
+- Day 7, done: `--place <text>` keeps quakes whose `place` contains that text, case-sensitive. Omitting the flag keeps every place. The filter runs with `--min-magnitude`, before `--sort magnitude` and `--limit`.
 
 `parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
 
@@ -99,7 +100,7 @@ When that selection is empty, `--format text` writes no lines and does not write
 
 ## `--limit` and `--sort`
 
-`readLimit` and `readSort` run on `process.argv` before `fetch`, the same way `readMinMagnitude` and `readFormat` do. Selection order is fixed: drop quakes below `--min-magnitude`, then order by magnitude descending when `--sort magnitude` is set, then keep the first `--limit` rows. `--format json` and `--format text` both print that same list.
+`readLimit` and `readSort` run on `process.argv` before `fetch`, the same way `readMinMagnitude` and `readFormat` do. Selection order is fixed: drop quakes below `--min-magnitude`, drop quakes whose `place` does not contain `--place` when that flag is set, then order by magnitude descending when `--sort magnitude` is set, then keep the first `--limit` rows. `--format json` and `--format text` both print that same list.
 
 ```bash
 npm run quakes -- --limit 2
@@ -126,6 +127,18 @@ npm run quakes -- --format text --limit 2 --sort magnitude
 ```
 
 Sort still runs before the limit. Putting `--limit` earlier in argv does not keep the first two feed rows when `--sort magnitude` is also set.
+
+## `--place` filter
+
+`readPlace` runs on `process.argv` before `fetch`, the same way `readMinMagnitude`, `readLimit`, `readSort`, and `readFormat` do. A quake stays when its `place` contains the flag's text. The check is case-sensitive. Omitting `--place` keeps every place. The place filter runs with `--min-magnitude`, before `--sort magnitude` and `--limit`.
+
+```bash
+npm run quakes -- --place Chile
+```
+
+On the in-memory list, `--place high` keeps the quake whose place is `high place`. `--place place` keeps `low`, `edge`, and `high`.
+
+A missing value throws `TypeError` (`--place requires text`). That check happens before `fetch`, and the message is written to stderr with exit code 1.
 
 With that in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format text` prints:
 
@@ -202,7 +215,9 @@ npm run typecheck
 
 The same file locks the three in-memory lines `M 4.7  35 km  low place  2024-03-09T16:00:00.000Z`, `M 5  10 km  edge place  2024-03-09T16:00:00.000Z`, and `M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z`. It asserts those lines do not contain the longitudes `-71.2` or `145.8401`. `renderQuakes([], "text")` is an empty string, while the JSON expectation is `JSON.stringify(quakes, null, 2)` plus a trailing newline. The composition case passes `["--min-magnitude", "5", "--format", "text"]` to both `selectQuakes` and `readFormat`, so the 4.7 line is absent. None of that calls USGS.
 
-`tests/limitSort.test.ts` uses the same in-memory magnitudes 4.7 (`low`), 5 (`edge`), and 6.2 (`high`). `--limit 2` keeps `low` then `edge`. `--sort magnitude` yields `high`, `edge`, `low`, and `--sort magnitude --limit 2` yields `high` then `edge`. `--min-magnitude 5 --limit 1` keeps `edge`, the first quake that passed the filter, not `low`. The text and JSON cases render that selected list and spy on `globalThis.fetch`. `npm test` runs those twenty-three tests in four files and does not call USGS.
+`tests/limitSort.test.ts` uses the same in-memory magnitudes 4.7 (`low`), 5 (`edge`), and 6.2 (`high`). `--limit 2` keeps `low` then `edge`. `--sort magnitude` yields `high`, `edge`, `low`, and `--sort magnitude --limit 2` yields `high` then `edge`. `--min-magnitude 5 --limit 1` keeps `edge`, the first quake that passed the filter, not `low`. The text and JSON cases render that selected list and spy on `globalThis.fetch`.
+
+`tests/place.test.ts` uses that same in-memory list. Places are `low place`, `edge place`, and `high place`. `--place high` keeps `high`. Omitting the flag keeps all three. A missing value throws `TypeError` (`--place requires text`). The tests spy on `globalThis.fetch`. `npm test` runs those thirty-three tests in five files and does not call USGS.
 
 That file has eleven tests. One expects `--limit 2` to leave the parsed array in feed order (`low`, `edge`, `high`) while the selected copy is `low`, `edge`. One expects `readLimit([])` to be `undefined`. One expects `--min-magnitude 5 --limit 1` to keep `edge`. The rejection test expects `TypeError` for a missing value and for `0`, `-1`, `1.5`, `2.0`, `+3`, `01`, and `big`, and it spies on `globalThis.fetch`. The sort tests expect `high`, `edge`, `low`, expect `readSort([])` to be `undefined`, and expect `TypeError` for a missing value, for `time`, and for `MAGNITUDE`. A swapped-flag test expects both `--sort magnitude --limit 2` and `--limit 2 --sort magnitude` to keep `high` then `edge`. The tie test expects `largest`, `first`, `second`. `--limit 9` keeps all three ids. The format test expects the two text lines for `high` and `edge` and a two-space JSON array whose only id is `high`. Each fetch spy asserts it was not called.
 
@@ -214,4 +229,4 @@ That file has eleven tests. One expects `--limit 2` to leave the parsed array in
 
 https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson
 
-USGS serves that summary to anonymous clients. The body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day. The same URL is the `SIGNIFICANT_DAY_URL` constant in `src/quakes.ts` and `metadata.url` on the fixture. `npm test` still reads `fixtures/significant_day.sample.geojson` from disk, so a USGS outage or a missing network does not fail the suite. The CLI is the only path that opens a socket, and only after `--min-magnitude`, `--limit`, `--sort`, and `--format` parse.
+USGS serves that summary to anonymous clients. The body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day. The same URL is the `SIGNIFICANT_DAY_URL` constant in `src/quakes.ts` and `metadata.url` on the fixture. `npm test` still reads `fixtures/significant_day.sample.geojson` from disk, so a USGS outage or a missing network does not fail the suite. The CLI is the only path that opens a socket, and only after `--min-magnitude`, `--place`, `--limit`, `--sort`, and `--format` parse.
