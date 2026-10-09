@@ -119,7 +119,7 @@ A missing `--limit` value throws `TypeError` (`--limit requires a positive integ
 
 `--sort magnitude` is a stable descending sort. Two quakes with the same magnitude keep the order they had in the feed. The tie test builds `first` and `second` at magnitude 5, then `largest` at 6.2. After `--sort magnitude` the ids are `largest`, `first`, `second`. The sort copies the list first, so the array returned by `parseQuakes` stays in feed order.
 
-`--limit`, `--sort`, `--min-magnitude`, and `--format` each look up their own flag. One flag's value is not consumed by the other, and the order of the flags does not change the selection. These two commands select the same quakes, the two largest that remain after the magnitude filter, and print the same text lines:
+`--limit`, `--sort`, `--min-magnitude`, `--place`, and `--format` each look up their own flag. One flag's value is not consumed by the other, and the order of the flags does not change the selection. These two commands select the same quakes, the two largest that remain after the magnitude filter, and print the same text lines:
 
 ```bash
 npm run quakes -- --sort magnitude --limit 2 --format text
@@ -127,6 +127,15 @@ npm run quakes -- --format text --limit 2 --sort magnitude
 ```
 
 Sort still runs before the limit. Putting `--limit` earlier in argv does not keep the first two feed rows when `--sort magnitude` is also set.
+
+With that in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format text` prints:
+
+```text
+M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
+M 5  10 km  edge place  2024-03-09T16:00:00.000Z
+```
+
+`--sort magnitude --limit 1 --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON. The text line is the only place that turns it into `2024-03-09T16:00:00.000Z`. The `low` quake is not in either sample.
 
 ## `--place` filter
 
@@ -146,14 +155,20 @@ An empty following token is not a missing value. `--place` with no next token th
 
 `readPlace` uses the same argv shape as `readLimit`: the flag is its own token, and the text is the next token. `--place=Chile` is not that flag, so every place stays. The flag name is case-sensitive. `--Place high` does not select a place filter. Those checks run before `fetch`.
 
-With that in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format text` prints:
+`--place`, `--min-magnitude`, `--sort`, `--limit`, and `--format` each look up their own flag. One flag's value is not consumed by the other, and the order of the flags does not change the selection. These two commands keep the largest quake whose place contains `place` and whose magnitude is at least 5, and they print the same text line:
+
+```bash
+npm run quakes -- --place place --min-magnitude 5 --sort magnitude --limit 1 --format text
+npm run quakes -- --format text --limit 1 --sort magnitude --min-magnitude 5 --place place
+```
+
+With the in-memory list that line is:
 
 ```text
 M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
-M 5  10 km  edge place  2024-03-09T16:00:00.000Z
 ```
 
-`--sort magnitude --limit 1 --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON. The text line is the only place that turns it into `2024-03-09T16:00:00.000Z`. The `low` quake is not in either sample.
+`--place edge --format json` prints a two-space array of one object, the `edge` quake: magnitude `5`, place `edge place`, `depthKm` `10`, longitude `145.8401`, latitude `-38.3802`. `time` stays `1710000000000` in JSON.
 
 ## Location fields
 
