@@ -138,6 +138,8 @@ npm run quakes -- --place Chile
 
 On the in-memory list, `--place high` keeps the quake whose place is `high place`. `--place place` keeps `low`, `edge`, and `high`.
 
+The match is `place.includes(text)`. It is a literal substring, and it is case-sensitive. `--place High` keeps nothing, and `--place Place` keeps nothing, because those three places are `low place`, `edge place`, and `high place`. A place stored as `chile` does not contain `Chile`. A `.` in the text is a period character, not a pattern.
+
 A missing value throws `TypeError` (`--place requires text`). That check happens before `fetch`, and the message is written to stderr with exit code 1.
 
 With that in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format text` prints:
