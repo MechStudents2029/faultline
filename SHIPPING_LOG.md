@@ -103,3 +103,7 @@ The Day 6 limit-and-sort entry above described the tree at the squash merge. The
 - A quake stays when `place` contains that text, case-sensitive. Omitting the flag keeps every place. A missing value throws `TypeError`.
 - The filter runs with `--min-magnitude`, before `--sort magnitude` and `--limit`.
 - `tests/place.test.ts` uses an in-memory list and spies on `fetch`. No new feed and no API key.
+
+## 2026-10-09 — Day 7 squash-merged
+
+Pull request #6, "Day 7: filter selected quakes by place", was squash-merged into `main`. The merge commit is `495b7e2969cadb7c607a991e00cd206f346b914e`. It carries `readPlace` in `src/selectQuakes.ts`, the call that runs before `fetch` in `src/quakes.ts`, `tests/place.test.ts`, and the README usage for `--place`. `cursor/day7-place-filter-e4a2` was deleted after the merge, so `main` holds one Day 7 commit rather than the branch commit plus a second copy.
