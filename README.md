@@ -144,6 +144,8 @@ A missing value throws `TypeError` (`--place requires text`). That check happens
 
 An empty following token is not a missing value. `--place` with no next token throws. A next token of `""` is present, so `readPlace` returns that empty string and does not throw. Every place contains the empty string, so the in-memory list stays `low`, `edge`, and `high`. A single space is also present text. It matches those three places, because each stored place contains one space. Two spaces match none of them. `high place` matches only the `high` quake.
 
+`readPlace` uses the same argv shape as `readLimit`: the flag is its own token, and the text is the next token. `--place=Chile` is not that flag, so every place stays. The flag name is case-sensitive. `--Place high` does not select a place filter. Those checks run before `fetch`.
+
 With that in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format text` prints:
 
 ```text
