@@ -132,3 +132,7 @@ Pull request #7, "Day 8: filter selected quakes by max depth", was squash-merged
 
 - Day 9 has not started. The CLI does not take `--min-depth`, so a shallow cutoff cannot drop quakes before the sort and the limit.
 - The text renderer still does not add a header row. An empty selection prints no lines. JSON still prints `[]`.
+
+## 2026-10-10 — README notes after the Day 8 merge
+
+The Day 8 max-depth entry above described the tree at the squash merge. The README on `main` now records that `--max-depth` is an inclusive kilometer cutoff (`22.4` keeps `high`, `22.3` drops it, `35` keeps `low`, and `9.9` keeps nothing), that `--max-depth=10` and `--Max-depth` do not select the filter, and that `1e1`, `+22.4`, and `35.0` are finite kilometer tokens while `deep` and `35km` throw before `fetch`. Zero and `-1` are real cutoffs and keep none of the positive in-memory depths. It shows that `--max-depth 22.4 --place place --min-magnitude 5 --sort magnitude --limit 1 --format text` and the swapped flag order print the same line, the `high` quake, and that `--max-depth 22.4 --place high --format json` is one object with `time` still in epoch milliseconds. A limit counts rows after the depth filter. `--max-depth 9 --limit 2` still prints `[]` as JSON and no text lines. The test notes list the ten `tests/maxDepth.test.ts` cases and the fetch spies. `WEEK_PLAN.md` records squash commit `7acd2e55384e9ec4713014c42ac41cc30b8c86a0` and sketches Day 9 (`--min-depth`) as unstarted. No new feed and no API key.
