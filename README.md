@@ -191,6 +191,8 @@ The comparison is `depthKm <= km`. A quake at the cutoff stays. On the in-memory
 
 The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`10`, `22.4`, `+22.4`, `35.0`, `1e1`). `--max-depth 1e1` is 10 km and keeps `edge`. `--max-depth +22.4` keeps `edge` and `high`. `--max-depth 35.0` keeps all three. `deep` and `35km` are not finite numbers, so each throws `TypeError` (`--max-depth expects a finite number, received deep`, and the same sentence with `35km`).
 
+Zero and a negative cutoff are finite numbers, so they do not throw. They are still kilometers. The in-memory depths are 10, 22.4, and 35, all below the surface. `--max-depth 0` keeps none of them. `--max-depth -1` keeps none of them. Omitting the flag is the only way to keep every depth. A cutoff of `0` is a real filter, not the omitted flag.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
