@@ -127,3 +127,8 @@ The Day 7 place-filter entry above described the tree at the squash merge. The R
 ## 2026-10-10 — Day 8 squash-merged
 
 Pull request #7, "Day 8: filter selected quakes by max depth", was squash-merged into `main`. The merge commit is `7acd2e55384e9ec4713014c42ac41cc30b8c86a0`. It carries `readMaxDepth` in `src/selectQuakes.ts`, the call that runs before `fetch` in `src/quakes.ts`, `tests/maxDepth.test.ts`, and the README usage for `--max-depth`. `cursor/day8-max-depth-f05c` was deleted after the merge, so `main` holds one Day 8 commit rather than the branch commit plus a second copy.
+
+## Still open after the Day 8 merge
+
+- Day 9 has not started. The CLI does not take `--min-depth`, so a shallow cutoff cannot drop quakes before the sort and the limit.
+- The text renderer still does not add a header row. An empty selection prints no lines. JSON still prints `[]`.
