@@ -2,6 +2,7 @@ import { readFormat, renderQuakes } from "./formatQuakes.js";
 import { parseQuakes } from "./parseQuakes.js";
 import {
   readLimit,
+  readMaxDepth,
   readMinMagnitude,
   readPlace,
   readSort,
@@ -26,6 +27,7 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   readMinMagnitude(argv);
   readPlace(argv);
+  readMaxDepth(argv);
   readLimit(argv);
   readSort(argv);
   const format = readFormat(argv);

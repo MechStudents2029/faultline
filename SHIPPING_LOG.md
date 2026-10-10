@@ -116,3 +116,10 @@ Pull request #6, "Day 7: filter selected quakes by place", was squash-merged int
 ## 2026-10-09 — README notes after the Day 7 merge
 
 The Day 7 place-filter entry above described the tree at the squash merge. The README on `main` now records that `--place` is a case-sensitive literal substring (`High` and `Place` match nothing on the in-memory list, and `chile` does not contain `Chile`), that an empty token keeps every place, that one space matches `low place`, `edge place`, and `high place`, and that two spaces match none of them. `--place=Chile` and `--Place` do not select the filter. It shows that `--place place --min-magnitude 5 --sort magnitude --limit 1 --format text` and the swapped flag order print the same line, the `high` quake, and that `--place edge --format json` is one object with `time` still in epoch milliseconds. A limit counts rows after the place filter. `--place Chile --limit 2` still prints `[]` as JSON and no text lines. The test notes list the ten `tests/place.test.ts` cases and the fetch spies, and they name `tests/limitSort.test.ts` for the eleven limit-and-sort cases. `WEEK_PLAN.md` records squash commit `495b7e2969cadb7c607a991e00cd206f346b914e` and sketches Day 8 (`--max-depth`) as unstarted. No new feed and no API key.
+
+## 2026-10-10 — Day 8 max depth
+
+- `npm run quakes` accepts `--max-depth <km>`, read from argv before `fetch`.
+- A quake stays when `depthKm` is less than or equal to that number. Omitting the flag keeps every depth. A missing or non-numeric value throws `TypeError`.
+- The filter runs with `--min-magnitude` and `--place`, before `--sort magnitude` and `--limit`.
+- `tests/maxDepth.test.ts` uses an in-memory list and spies on `fetch`. No new feed and no API key.

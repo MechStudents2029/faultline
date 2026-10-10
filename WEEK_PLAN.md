@@ -76,6 +76,6 @@ Day 6 can drop, reorder, and cap the selected list, and it still prints every pl
 
 ## Day 8 — max depth
 
-Status: unstarted
+Status: done
 
-Day 7 can drop a quake whose `place` does not contain `--place`. Day 8 can add `--max-depth <km>`, parsed before `fetch` the same way as `--place`. A quake would stay when `depthKm` is less than or equal to that number. Omitting the flag would keep every depth. A missing or non-numeric value would throw `TypeError` before `fetch`. The filter would run with `--min-magnitude` and `--place`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests would filter the same in-memory quake list and spy on `fetch`.
+Day 7 can drop a quake whose `place` does not contain `--place`. Day 8 adds `--max-depth <km>`, parsed before `fetch` the same way as `--place`. A quake stays when `depthKm` is less than or equal to that number. Omitting the flag keeps every depth. A missing or non-numeric value throws `TypeError` before `fetch`. The filter runs with `--min-magnitude` and `--place`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests filter the same in-memory quake list and spy on `fetch`.
