@@ -185,6 +185,8 @@ On the in-memory list, `--max-depth 22.4` keeps `edge` (10 km) and `high` (22.4 
 
 A missing value throws `TypeError` (`--max-depth requires a number`). A token that is not a finite number, such as `deep`, throws `TypeError` (`--max-depth expects a finite number, received deep`). Those checks happen before `fetch`, and the message is written to stderr with exit code 1.
 
+The comparison is `depthKm <= km`. A quake at the cutoff stays. On the in-memory list, `high` is 22.4 km, so `--max-depth 22.4` keeps it and `--max-depth 22.3` drops it. `--max-depth 10` keeps only `edge`. `--max-depth 35` keeps `low` as well, because 35 km is equal to the cutoff, not deeper. `--max-depth 9.9` keeps nothing. The number is kilometers, the same unit as `depthKm`. The filter does not convert meters or feet.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
