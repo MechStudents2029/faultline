@@ -123,3 +123,7 @@ The Day 7 place-filter entry above described the tree at the squash merge. The R
 - A quake stays when `depthKm` is less than or equal to that number. Omitting the flag keeps every depth. A missing or non-numeric value throws `TypeError`.
 - The filter runs with `--min-magnitude` and `--place`, before `--sort magnitude` and `--limit`.
 - `tests/maxDepth.test.ts` uses an in-memory list and spies on `fetch`. No new feed and no API key.
+
+## 2026-10-10 — Day 8 squash-merged
+
+Pull request #7, "Day 8: filter selected quakes by max depth", was squash-merged into `main`. The merge commit is `7acd2e55384e9ec4713014c42ac41cc30b8c86a0`. It carries `readMaxDepth` in `src/selectQuakes.ts`, the call that runs before `fetch` in `src/quakes.ts`, `tests/maxDepth.test.ts`, and the README usage for `--max-depth`. `cursor/day8-max-depth-f05c` was deleted after the merge, so `main` holds one Day 8 commit rather than the branch commit plus a second copy.
