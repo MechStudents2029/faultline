@@ -229,6 +229,8 @@ The comparison is `depthKm >= km`. A quake at the floor stays. On the in-memory 
 
 The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`10`, `22.4`, `+22.4`, `35.0`, `1e1`, `2.24e1`). `--min-depth 2.24e1` is 22.4 km and keeps `low` and `high`. `--min-depth +22.4` keeps those same two. `--min-depth 35.0` keeps `low`. `--min-depth 1e1` is 10 km and keeps all three, because `edge` is exactly 10 km. `shallow` and `35km` are not finite numbers, so each throws `TypeError` (`--min-depth expects a finite number, received shallow`, and the same sentence with `35km`).
 
+Zero and a negative floor are finite numbers, so they do not throw. They are still kilometers. The in-memory depths are 10, 22.4, and 35, all below the surface. `--min-depth 0` keeps all three. `--min-depth -1` keeps all three. That result matches an omitted flag on this list only because none of the depths are negative. A floor of `0` is a real filter, not the omitted flag. Omitting the flag is what keeps every depth, including a depth above the surface.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
