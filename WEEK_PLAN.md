@@ -89,3 +89,9 @@ Status: done, squash-merged to `main` in pull request #8
 The squash commit is `146b49938d17214a4e17d7b0683009a4e8a02544`. `cursor/day9-min-depth-8677` was deleted after the merge. `readMinDepth` runs before `fetch`. `--min-depth` keeps a quake when `depthKm` is greater than or equal to the number. Omitting the flag keeps every depth. A missing or non-numeric value throws `TypeError` before `fetch`.
 
 Day 8 can drop a quake deeper than `--max-depth`. Day 9 adds `--min-depth <km>`, parsed before `fetch` the same way as `--max-depth`. A quake stays when `depthKm` is greater than or equal to that number. Omitting the flag keeps every depth. A missing or non-numeric value throws `TypeError` before `fetch`. The filter runs with `--min-magnitude`, `--place`, and `--max-depth`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests filter the same in-memory quake list and spy on `fetch`.
+
+## Day 10 — text header
+
+Status: unstarted
+
+Day 9 can drop a quake shallower than `--min-depth`. Day 10 can add a header line to `--format text`. The header would name the four fields already on each line: magnitude, depth in km, place, and UTC time. Omitting `--format`, or passing `--format json`, would stay a JSON array with no header. An empty text selection would still print no lines. It stays on the existing significant-day feed: no new URL and no API key. Tests would render an in-memory list and spy on `fetch`.
