@@ -225,6 +225,10 @@ A missing value throws `TypeError` (`--min-depth requires a number`). A token th
 
 The comparison is `depthKm >= km`. A quake at the floor stays. On the in-memory list, `high` is 22.4 km, so `--min-depth 22.4` keeps it and `--min-depth 22.5` drops it. `--min-depth 35` keeps only `low`. `--min-depth 10` keeps `edge` as well, because 10 km is equal to the floor, not shallower. `--min-depth 35.1` keeps nothing. The number is kilometers, the same unit as `depthKm`. The filter does not convert meters or feet.
 
+`readMinDepth` uses the same argv shape as `readMaxDepth`: the flag is its own token, and the value is the next token. `--min-depth=10` is not that flag, so every depth stays. The flag name is case-sensitive. `--Min-depth 10` does not select a depth filter. Those checks run before `fetch`.
+
+The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`10`, `22.4`, `+22.4`, `35.0`, `1e1`, `2.24e1`). `--min-depth 2.24e1` is 22.4 km and keeps `low` and `high`. `--min-depth +22.4` keeps those same two. `--min-depth 35.0` keeps `low`. `--min-depth 1e1` is 10 km and keeps all three, because `edge` is exactly 10 km. `shallow` and `35km` are not finite numbers, so each throws `TypeError` (`--min-depth expects a finite number, received shallow`, and the same sentence with `35km`).
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
