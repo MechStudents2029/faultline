@@ -231,6 +231,21 @@ The accepted token is a finite decimal, optionally signed, with an optional frac
 
 Zero and a negative floor are finite numbers, so they do not throw. They are still kilometers. The in-memory depths are 10, 22.4, and 35, all below the surface. `--min-depth 0` keeps all three. `--min-depth -1` keeps all three. That result matches an omitted flag on this list only because none of the depths are negative. A floor of `0` is a real filter, not the omitted flag. Omitting the flag is what keeps every depth, including a depth above the surface.
 
+`--min-depth`, `--max-depth`, `--place`, `--min-magnitude`, `--sort`, `--limit`, and `--format` each look up their own flag. One flag's value is not consumed by the other, and the order of the flags does not change the selection. These two commands keep the largest quake whose depth is at least 22.4 km and at most 35 km, whose place contains `place`, and whose magnitude is at least 5, and they print the same text line:
+
+```bash
+npm run quakes -- --min-depth 22.4 --max-depth 35 --place place --min-magnitude 5 --sort magnitude --limit 1 --format text
+npm run quakes -- --format text --limit 1 --sort magnitude --min-magnitude 5 --place place --max-depth 35 --min-depth 22.4
+```
+
+With the in-memory list that line is:
+
+```text
+M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
+```
+
+`--min-depth 35 --format text` prints the `low` line, `M 4.7  35 km  low place  2024-03-09T16:00:00.000Z`. `--min-depth 22.4 --place high --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
