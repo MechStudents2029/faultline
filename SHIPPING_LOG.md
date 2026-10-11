@@ -147,3 +147,8 @@ The Day 8 max-depth entry above described the tree at the squash merge. The READ
 ## 2026-10-11 — Day 9 squash-merged
 
 Pull request #8, "Day 9: filter selected quakes by min depth", was squash-merged into `main`. The merge commit is `146b49938d17214a4e17d7b0683009a4e8a02544`. It carries `readMinDepth` in `src/selectQuakes.ts`, the call that runs before `fetch` in `src/quakes.ts`, `tests/minDepth.test.ts`, and the README usage for `--min-depth`. `cursor/day9-min-depth-8677` was deleted after the merge, so `main` holds one Day 9 commit rather than the branch commit plus a second copy.
+
+## Still open after the Day 9 merge
+
+- Day 10 has not started. The text renderer still does not add a header row, so `--format text` prints data lines only.
+- An empty selection prints no lines. JSON still prints `[]`.
