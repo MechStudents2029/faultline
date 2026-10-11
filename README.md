@@ -246,6 +246,8 @@ M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
 
 `--min-depth 35 --format text` prints the `low` line, `M 4.7  35 km  low place  2024-03-09T16:00:00.000Z`. `--min-depth 22.4 --place high --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON.
 
+`--limit` counts rows after the min-depth filter, not features in the raw feed. `--min-depth 22.4 --limit 9` returns `low` and `high` because `edge` is already shallower than 22.4 km and the count cannot pull it back. `--min-depth 10 --max-depth 22.4 --place edge --sort magnitude --limit 2` returns only `edge`. When every quake is shallower than the floor, as with `--min-depth 36 --limit 2`, sort and limit both see an empty list. A floor above the ceiling does the same: `--min-depth 35 --max-depth 10` keeps nothing. `--format json` still prints `[]` with a trailing newline, and `--format text` still prints no lines.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
