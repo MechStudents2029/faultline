@@ -3,6 +3,7 @@ import { parseQuakes } from "./parseQuakes.js";
 import {
   readLimit,
   readMaxDepth,
+  readMinDepth,
   readMinMagnitude,
   readPlace,
   readSort,
@@ -28,6 +29,7 @@ async function main(): Promise<void> {
   readMinMagnitude(argv);
   readPlace(argv);
   readMaxDepth(argv);
+  readMinDepth(argv);
   readLimit(argv);
   readSort(argv);
   const format = readFormat(argv);
