@@ -155,6 +155,8 @@ M 5  10 km  edge place  2024-03-09T16:00:00.000Z
 
 `--sort magnitude --limit 1 --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON. The text line is the only place that turns it into `2024-03-09T16:00:00.000Z`. The `low` quake is not in either sample.
 
+The header is not part of the selected list. `--sort magnitude` orders quake rows only, and `--limit` counts quake rows only. The header stays the first line of a non-empty text listing and is not repeated. `--min-magnitude`, `--place`, `--max-depth`, and `--min-depth` run before that line is chosen. A filter that leaves one quake prints the header plus that one line. A filter that leaves none prints neither. Flag order does not change the header text.
+
 ## `--place` filter
 
 `readPlace` runs on `process.argv` before `fetch`, the same way `readMinMagnitude`, `readLimit`, `readSort`, and `readFormat` do. A quake stays when its `place` contains the flag's text. The check is case-sensitive. Omitting `--place` keeps every place. The place filter runs with `--min-magnitude`, before `--sort magnitude` and `--limit`.
