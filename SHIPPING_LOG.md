@@ -172,3 +172,7 @@ Pull request #9, "Day 10: print a text header with --format text", was squash-me
 
 - Day 11 has not started. `--format text` does not print how many quake lines followed the header.
 - JSON still prints a plain array with no header. An empty text selection still prints no lines.
+
+## 2026-10-12 — README notes after the Day 10 merge
+
+The Day 10 text-header entry above described the tree at the squash merge. The README on `main` now records that a non-empty `--format text` listing starts with `magnitude  depth in km  place  UTC time`, that two spaces separate those four names, and that `depth in km` and `UTC time` each contain a single space. It shows the Chile line under that header and the three in-memory lines (`low` at 4.7, `edge` at 5, `high` at 6.2) in feed order under the same header. `--format json` and an omitted flag stay a two-space JSON array that starts with `[` and does not contain the header line. An empty text selection prints no lines, including no header by itself. Sort and limit apply to quake rows only, so the header stays first and is omitted when the selection is empty. The test notes describe the offline header checks and the fifty-four tests. `WEEK_PLAN.md` records squash commit `1760491c76794274c5737bf1f27b0ec554776212` and sketches Day 11 (a trailing text count, such as `2 quakes`) as unstarted. No new feed and no API key.
