@@ -163,3 +163,7 @@ The Day 9 min-depth entry above described the tree at the squash merge. The READ
 - Omitting `--format`, or passing `--format json`, still prints the two-space JSON array with no header.
 - An empty text selection still prints no lines, including no header.
 - Tests render an in-memory quake list and spy on `fetch`. No new feed and no API key.
+
+## 2026-10-12 — Day 10 squash-merged
+
+Pull request #9, "Day 10: print a text header with --format text", was squash-merged into `main`. The merge commit is `1760491c76794274c5737bf1f27b0ec554776212`. It carries the header in `renderQuakes` (`src/formatQuakes.ts`), the text expectations in `tests/formatQuakes.test.ts`, `tests/limitSort.test.ts`, `tests/place.test.ts`, `tests/maxDepth.test.ts`, and `tests/minDepth.test.ts`, and the README example line. `cursor/day10-text-header-2608` was deleted after the merge, so `main` holds one Day 10 commit rather than the branch commit plus a second copy.
