@@ -170,7 +170,10 @@ describe("place filter", () => {
 
     expect(ids(selected)).toEqual(["high"]);
     expect(renderQuakes(selected, readFormat(argv))).toBe(
-      "M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z\n",
+      [
+        "magnitude  depth in km  place  UTC time",
+        "M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z",
+      ].join("\n") + "\n",
     );
     expect(readFormat(jsonArgv)).toBe("json");
     expect(ids(jsonSelected)).toEqual(["edge"]);

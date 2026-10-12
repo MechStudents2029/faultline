@@ -184,6 +184,7 @@ describe("limit and sort", () => {
     expect(ids(selected)).toEqual(["high", "edge"]);
     expect(text).toBe(
       [
+        "magnitude  depth in km  place  UTC time",
         "M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z",
         "M 5  10 km  edge place  2024-03-09T16:00:00.000Z",
       ].join("\n") + "\n",

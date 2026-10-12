@@ -26,9 +26,14 @@ export function readFormat(argv: readonly string[]): QuakeFormat {
   return raw;
 }
 
+const TEXT_HEADER = "magnitude  depth in km  place  UTC time";
+
 /**
  * Render selected quakes for stdout.
- * `json` is a two-space JSON array. `text` is one line per quake.
+ * `json` is a two-space JSON array with no header.
+ * `text` starts with one header line naming magnitude, depth in km, place,
+ * and UTC time, then one line per quake. An empty text selection is empty:
+ * no header and no quake lines.
  */
 export function renderQuakes(
   quakes: readonly Quake[],
@@ -42,7 +47,7 @@ export function renderQuakes(
     return "";
   }
 
-  return `${quakes.map(formatQuakeLine).join("\n")}\n`;
+  return `${TEXT_HEADER}\n${quakes.map(formatQuakeLine).join("\n")}\n`;
 }
 
 function formatQuakeLine(quake: Quake): string {

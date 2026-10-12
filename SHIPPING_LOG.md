@@ -156,3 +156,10 @@ Pull request #8, "Day 9: filter selected quakes by min depth", was squash-merged
 ## 2026-10-11 — README notes after the Day 9 merge
 
 The Day 9 min-depth entry above described the tree at the squash merge. The README on `main` now records that `--min-depth` is an inclusive kilometer floor (`22.4` keeps `high`, `22.5` drops it, `35` keeps `low`, `10` keeps `edge`, and `35.1` keeps nothing), that `--min-depth=10` and `--Min-depth` do not select the filter, and that `2.24e1`, `+22.4`, `35.0`, and `1e1` are finite kilometer tokens while `shallow` and `35km` throw before `fetch`. Zero and `-1` are real floors and keep all three positive in-memory depths. It shows that `--min-depth 22.4 --max-depth 35 --place place --min-magnitude 5 --sort magnitude --limit 1 --format text` and the swapped flag order print the same line, the `high` quake, and that `--min-depth 22.4 --place high --format json` is one object with `time` still in epoch milliseconds. A limit counts rows after the min-depth filter. `--min-depth 36 --limit 2` still prints `[]` as JSON and no text lines, and a floor above the ceiling (`--min-depth 35 --max-depth 10`) keeps nothing. The test notes list the ten `tests/minDepth.test.ts` cases and the fetch spies. `WEEK_PLAN.md` records squash commit `146b49938d17214a4e17d7b0683009a4e8a02544` and sketches Day 10 (a `--format text` header) as unstarted. No new feed and no API key.
+
+## 2026-10-12 — Day 10 text header
+
+- `npm run quakes -- --format text` prints one header line, `magnitude  depth in km  place  UTC time`, before the quake lines.
+- Omitting `--format`, or passing `--format json`, still prints the two-space JSON array with no header.
+- An empty text selection still prints no lines, including no header.
+- Tests render an in-memory quake list and spy on `fetch`. No new feed and no API key.

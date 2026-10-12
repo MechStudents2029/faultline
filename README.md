@@ -1,6 +1,6 @@
 # faultline
 
-Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`. Day 8 adds `--max-depth`. Day 9 adds `--min-depth`.
+Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`. Day 8 adds `--max-depth`. Day 9 adds `--min-depth`. Day 10 adds a header line to `--format text`.
 
 ## Project goals
 
@@ -15,6 +15,7 @@ Faultline is a one-week resume CLI. Someone should be able to clone the repo and
 - Day 7, done: `--place <text>` keeps quakes whose `place` contains that text, case-sensitive. Omitting the flag keeps every place. The filter runs with `--min-magnitude`, before `--sort magnitude` and `--limit`.
 - Day 8, done: `--max-depth <km>` keeps quakes whose `depthKm` is less than or equal to that number. Omitting the flag keeps every depth. The filter runs with `--min-magnitude` and `--place`, before `--sort magnitude` and `--limit`.
 - Day 9, done: `--min-depth <km>` keeps quakes whose `depthKm` is greater than or equal to that number. Omitting the flag keeps every depth. The filter runs with `--min-magnitude`, `--place`, and `--max-depth`, before `--sort magnitude` and `--limit`.
+- Day 10, done: `--format text` prints one header line naming magnitude, depth in km, place, and UTC time, then one line per selected quake. Omitting `--format`, or `--format json`, keeps the JSON array with no header. An empty text selection prints no lines.
 
 `parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
 
@@ -67,10 +68,11 @@ npm run quakes -- --format text
 ```
 
 ```text
+magnitude  depth in km  place  UTC time
 M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z
 ```
 
-That line is magnitude, then `depthKm` with a `km` suffix, then `place`, then `time` formatted as a UTC ISO-8601 string (`Date.toISOString()`). Two spaces separate those four fields. Longitude and latitude stay on the quake object and are not printed on the line. JSON output still leaves `time` as epoch milliseconds; only the text line converts it.
+When the text selection is not empty, the first line is `magnitude  depth in km  place  UTC time`. Two spaces separate those four names. Each following line is magnitude, then `depthKm` with a `km` suffix, then `place`, then `time` formatted as a UTC ISO-8601 string (`Date.toISOString()`). Two spaces separate those four fields. Longitude and latitude stay on the quake object and are not printed on the line. JSON output still leaves `time` as epoch milliseconds; only the text line converts it.
 
 The text line also omits `id`. JSON still prints all seven fields: `id`, `magnitude`, `place`, `time`, `longitude`, `latitude`, and `depthKm`. Text keeps four of them: `magnitude`, `depthKm`, `place`, and `time`. `parseQuakes` still returns epoch milliseconds. The ISO conversion lives only in `renderQuakes` when the format is `text`.
 
@@ -133,6 +135,7 @@ Sort still runs before the limit. Putting `--limit` earlier in argv does not kee
 With that in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format text` prints:
 
 ```text
+magnitude  depth in km  place  UTC time
 M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
 M 5  10 km  edge place  2024-03-09T16:00:00.000Z
 ```
@@ -164,9 +167,10 @@ npm run quakes -- --place place --min-magnitude 5 --sort magnitude --limit 1 --f
 npm run quakes -- --format text --limit 1 --sort magnitude --min-magnitude 5 --place place
 ```
 
-With the in-memory list that line is:
+With the in-memory list that output is:
 
 ```text
+magnitude  depth in km  place  UTC time
 M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
 ```
 
@@ -201,9 +205,10 @@ npm run quakes -- --max-depth 22.4 --place place --min-magnitude 5 --sort magnit
 npm run quakes -- --format text --limit 1 --sort magnitude --min-magnitude 5 --place place --max-depth 22.4
 ```
 
-With the in-memory list that line is:
+With the in-memory list that output is:
 
 ```text
+magnitude  depth in km  place  UTC time
 M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
 ```
 
@@ -238,9 +243,10 @@ npm run quakes -- --min-depth 22.4 --max-depth 35 --place place --min-magnitude 
 npm run quakes -- --format text --limit 1 --sort magnitude --min-magnitude 5 --place place --max-depth 35 --min-depth 22.4
 ```
 
-With the in-memory list that line is:
+With the in-memory list that output is:
 
 ```text
+magnitude  depth in km  place  UTC time
 M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
 ```
 

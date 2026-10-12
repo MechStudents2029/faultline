@@ -193,7 +193,10 @@ describe("min depth filter", () => {
 
     expect(ids(selected)).toEqual(["low"]);
     expect(renderQuakes(selected, readFormat(argv))).toBe(
-      "M 4.7  35 km  low place  2024-03-09T16:00:00.000Z\n",
+      [
+        "magnitude  depth in km  place  UTC time",
+        "M 4.7  35 km  low place  2024-03-09T16:00:00.000Z",
+      ].join("\n") + "\n",
     );
     expect(readFormat(jsonArgv)).toBe("json");
     expect(ids(jsonSelected)).toEqual(["high"]);

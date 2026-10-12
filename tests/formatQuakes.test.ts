@@ -42,13 +42,41 @@ const chileQuake = {
   depthKm: 35,
 };
 
+const textHeader = "magnitude  depth in km  place  UTC time";
+
 describe("formatQuakes", () => {
   it("prints the week-plan text line and does not call fetch", () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch");
 
     expect(renderQuakes([chileQuake], "text")).toBe(
-      "M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z\n",
+      [
+        textHeader,
+        "M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z",
+      ].join("\n") + "\n",
     );
+    expect(fetchSpy).not.toHaveBeenCalled();
+    fetchSpy.mockRestore();
+  });
+
+  it("prints a field header before text lines and does not call fetch", () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    const text = renderQuakes([chileQuake], "text");
+    const [header, line, blank] = text.split("\n");
+
+    expect(header).toBe("magnitude  depth in km  place  UTC time");
+    expect(header.split("  ")).toEqual([
+      "magnitude",
+      "depth in km",
+      "place",
+      "UTC time",
+    ]);
+    expect(line).toBe(
+      "M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z",
+    );
+    expect(blank).toBe("");
+    expect(renderQuakes([], "text")).toBe("");
+    expect(renderQuakes([chileQuake], "json")).not.toContain(textHeader);
+    expect(renderQuakes([chileQuake], readFormat([]))).not.toContain(textHeader);
     expect(fetchSpy).not.toHaveBeenCalled();
     fetchSpy.mockRestore();
   });
@@ -59,6 +87,7 @@ describe("formatQuakes", () => {
 
     expect(text).toBe(
       [
+        textHeader,
         "M 4.7  35 km  low place  2024-03-09T16:00:00.000Z",
         "M 5  10 km  edge place  2024-03-09T16:00:00.000Z",
         "M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z",
@@ -91,6 +120,7 @@ describe("formatQuakes", () => {
 
     expect(text).toBe(
       [
+        textHeader,
         "M 5  10 km  edge place  2024-03-09T16:00:00.000Z",
         "M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z",
       ].join("\n") + "\n",
