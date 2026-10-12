@@ -109,7 +109,7 @@ npm run quakes -- --format text --min-magnitude 5
 
 `readMinMagnitude` and `readFormat` each look up their own flag. One flag's value is not consumed by the other.
 
-When that selection is empty, `--format text` writes no lines and does not write `[]`. Stdout is empty and the exit code stays 0. A quiet significant day does that, and so does a day whose events are all below `--min-magnitude`. `--format json` still prints the empty array with a trailing newline:
+When that selection is empty, `--format text` writes no lines and does not write `[]`. Stdout is empty and the exit code stays 0. A quiet significant day does that, and so does a day whose events are all below `--min-magnitude`. The header is not printed on its own: `renderQuakes([], "text")` is an empty string, so there is no `magnitude  depth in km  place  UTC time` line and no quake line. The header is written only when at least one quake line follows it. `--format json` still prints the empty array with a trailing newline:
 
 ```text
 []
