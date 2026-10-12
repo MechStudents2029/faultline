@@ -92,6 +92,8 @@ Day 8 can drop a quake deeper than `--max-depth`. Day 9 adds `--min-depth <km>`,
 
 ## Day 10 — text header
 
-Status: done
+Status: done, squash-merged to `main` in pull request #9
+
+The squash commit is `1760491c76794274c5737bf1f27b0ec554776212`. `cursor/day10-text-header-2608` was deleted after the merge. `--format text` prints one header line before the quake lines. `--format json` and an omitted flag stay a JSON array with no header. An empty text selection still prints no lines.
 
 Day 9 can drop a quake shallower than `--min-depth`. Day 10 adds a header line to `--format text`. The header names the four fields already on each line: magnitude, depth in km, place, and UTC time. Omitting `--format`, or passing `--format json`, stays a JSON array with no header. An empty text selection still prints no lines, including no header. It stays on the existing significant-day feed: no new URL and no API key. Tests render an in-memory list and spy on `fetch`.
