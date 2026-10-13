@@ -167,6 +167,8 @@ M 5  10 km  edge place  2024-03-09T16:00:00.000Z
 
 The header is not part of the selected list. `--sort magnitude` orders quake rows only, and `--limit` counts quake rows only. The header stays the first line of a non-empty text listing and is not repeated. `--min-magnitude`, `--place`, `--max-depth`, and `--min-depth` run before that line is chosen. A filter that leaves one quake prints the header plus that one line. A filter that leaves none prints neither. Flag order does not change the header text.
 
+The count line is not part of the selected list either. `--limit` counts quake rows, not the header and not the count line. A filter that leaves two quakes prints the header, those two lines, and `2 quakes`. A filter that leaves one prints the header, that line, and `1 quake`. A filter that leaves none prints no count. On the in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format text` ends with `2 quakes`. `--place high --format text`, `--max-depth 10 --format text`, and `--min-depth 35 --format text` each end with `1 quake`.
+
 ## `--place` filter
 
 `readPlace` runs on `process.argv` before `fetch`, the same way `readMinMagnitude`, `readLimit`, `readSort`, and `readFormat` do. A quake stays when its `place` contains the flag's text. The check is case-sensitive. Omitting `--place` keeps every place. The place filter runs with `--min-magnitude`, before `--sort magnitude` and `--limit`.
