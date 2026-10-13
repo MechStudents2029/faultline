@@ -188,3 +188,8 @@ The Day 10 text-header entry above described the tree at the squash merge. The R
 ## 2026-10-13 — Day 11 squash-merged
 
 Pull request #10, "Day 11: print a text count line with --format text", was squash-merged into `main`. The merge commit is `53ccd9e6d0f91ea9dfb934fc85a6ee8ca0d905a3`. It carries the count line in `renderQuakes` (`src/formatQuakes.ts`), the text expectations in `tests/formatQuakes.test.ts`, `tests/limitSort.test.ts`, `tests/place.test.ts`, `tests/maxDepth.test.ts`, and `tests/minDepth.test.ts`, and the README example lines. `cursor/day11-text-count-df8a` was deleted after the merge, so `main` holds one Day 11 commit rather than the branch commit plus a second copy.
+
+## Still open after the Day 11 merge
+
+- Day 12 has not started. The CLI does not take `--max-magnitude`, so a magnitude ceiling cannot drop quakes before the sort and the limit.
+- JSON still prints a plain array with no count line. An empty text selection still prints no lines.
