@@ -187,6 +187,7 @@ describe("limit and sort", () => {
         "magnitude  depth in km  place  UTC time",
         "M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z",
         "M 5  10 km  edge place  2024-03-09T16:00:00.000Z",
+        "2 quakes",
       ].join("\n") + "\n",
     );
     expect(text).not.toContain("low place");

@@ -173,6 +173,7 @@ describe("place filter", () => {
       [
         "magnitude  depth in km  place  UTC time",
         "M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z",
+        "1 quake",
       ].join("\n") + "\n",
     );
     expect(readFormat(jsonArgv)).toBe("json");

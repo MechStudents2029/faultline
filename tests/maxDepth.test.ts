@@ -175,6 +175,7 @@ describe("max depth filter", () => {
       [
         "magnitude  depth in km  place  UTC time",
         "M 5  10 km  edge place  2024-03-09T16:00:00.000Z",
+        "1 quake",
       ].join("\n") + "\n",
     );
     expect(readFormat(jsonArgv)).toBe("json");

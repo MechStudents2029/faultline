@@ -52,6 +52,7 @@ describe("formatQuakes", () => {
       [
         textHeader,
         "M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z",
+        "1 quake",
       ].join("\n") + "\n",
     );
     expect(fetchSpy).not.toHaveBeenCalled();
@@ -61,7 +62,7 @@ describe("formatQuakes", () => {
   it("prints a field header before text lines and does not call fetch", () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch");
     const text = renderQuakes([chileQuake], "text");
-    const [header, line, blank] = text.split("\n");
+    const [header, line, count, blank] = text.split("\n");
 
     expect(header).toBe("magnitude  depth in km  place  UTC time");
     expect(header.split("  ")).toEqual([
@@ -73,10 +74,45 @@ describe("formatQuakes", () => {
     expect(line).toBe(
       "M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z",
     );
+    expect(count).toBe("1 quake");
     expect(blank).toBe("");
     expect(renderQuakes([], "text")).toBe("");
     expect(renderQuakes([chileQuake], "json")).not.toContain(textHeader);
+    expect(renderQuakes([chileQuake], "json")).not.toContain("1 quake");
     expect(renderQuakes([chileQuake], readFormat([]))).not.toContain(textHeader);
+    expect(renderQuakes([chileQuake], readFormat([]))).not.toContain("1 quake");
+    expect(fetchSpy).not.toHaveBeenCalled();
+    fetchSpy.mockRestore();
+  });
+
+  it("prints a trailing count of quake lines and does not call fetch", () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    const quakes = parseQuakes(collection);
+    const two = renderQuakes(
+      selectQuakes(quakes, ["--min-magnitude", "5"]),
+      "text",
+    );
+    const lines = two.split("\n");
+
+    expect(lines).toEqual([
+      textHeader,
+      "M 5  10 km  edge place  2024-03-09T16:00:00.000Z",
+      "M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z",
+      "2 quakes",
+      "",
+    ]);
+    expect(lines.at(-2)).toBe("2 quakes");
+    expect(lines.at(-2)).not.toBe("3 quakes");
+    expect(renderQuakes([chileQuake], "text").split("\n").at(-2)).toBe(
+      "1 quake",
+    );
+    expect(renderQuakes(quakes, "text").endsWith("3 quakes\n")).toBe(true);
+    expect(renderQuakes([], "text")).toBe("");
+    expect(renderQuakes(quakes, "json")).not.toContain("quakes");
+    expect(renderQuakes(quakes, readFormat([]))).not.toContain("quakes");
+    expect(renderQuakes(quakes, readFormat(["--format", "json"]))).not.toContain(
+      "quakes",
+    );
     expect(fetchSpy).not.toHaveBeenCalled();
     fetchSpy.mockRestore();
   });
@@ -91,6 +127,7 @@ describe("formatQuakes", () => {
         "M 4.7  35 km  low place  2024-03-09T16:00:00.000Z",
         "M 5  10 km  edge place  2024-03-09T16:00:00.000Z",
         "M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z",
+        "3 quakes",
       ].join("\n") + "\n",
     );
     expect(text).not.toContain("-71.2");
@@ -123,6 +160,7 @@ describe("formatQuakes", () => {
         textHeader,
         "M 5  10 km  edge place  2024-03-09T16:00:00.000Z",
         "M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z",
+        "2 quakes",
       ].join("\n") + "\n",
     );
     expect(text).not.toContain("low place");

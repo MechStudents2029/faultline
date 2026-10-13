@@ -30,10 +30,11 @@ const TEXT_HEADER = "magnitude  depth in km  place  UTC time";
 
 /**
  * Render selected quakes for stdout.
- * `json` is a two-space JSON array with no header.
+ * `json` is a two-space JSON array with no header and no count line.
  * `text` starts with one header line naming magnitude, depth in km, place,
- * and UTC time, then one line per quake. An empty text selection is empty:
- * no header and no quake lines.
+ * and UTC time, then one line per quake, then one trailing count of those
+ * quake lines (`1 quake` or `N quakes`). An empty text selection is empty:
+ * no header, no quake lines, and no count.
  */
 export function renderQuakes(
   quakes: readonly Quake[],
@@ -47,7 +48,12 @@ export function renderQuakes(
     return "";
   }
 
-  return `${TEXT_HEADER}\n${quakes.map(formatQuakeLine).join("\n")}\n`;
+  const lines = quakes.map(formatQuakeLine);
+  return `${TEXT_HEADER}\n${lines.join("\n")}\n${formatQuakeCount(lines.length)}\n`;
+}
+
+function formatQuakeCount(count: number): string {
+  return count === 1 ? "1 quake" : `${count} quakes`;
 }
 
 function formatQuakeLine(quake: Quake): string {

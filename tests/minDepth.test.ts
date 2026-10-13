@@ -196,6 +196,7 @@ describe("min depth filter", () => {
       [
         "magnitude  depth in km  place  UTC time",
         "M 4.7  35 km  low place  2024-03-09T16:00:00.000Z",
+        "1 quake",
       ].join("\n") + "\n",
     );
     expect(readFormat(jsonArgv)).toBe("json");

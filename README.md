@@ -1,6 +1,6 @@
 # faultline
 
-Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`. Day 8 adds `--max-depth`. Day 9 adds `--min-depth`. Day 10 adds a header line to `--format text`.
+Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`. Day 8 adds `--max-depth`. Day 9 adds `--min-depth`. Day 10 adds a header line to `--format text`. Day 11 adds a trailing count line to a non-empty `--format text` listing.
 
 ## Project goals
 
@@ -16,6 +16,7 @@ Faultline is a one-week resume CLI. Someone should be able to clone the repo and
 - Day 8, done: `--max-depth <km>` keeps quakes whose `depthKm` is less than or equal to that number. Omitting the flag keeps every depth. The filter runs with `--min-magnitude` and `--place`, before `--sort magnitude` and `--limit`.
 - Day 9, done: `--min-depth <km>` keeps quakes whose `depthKm` is greater than or equal to that number. Omitting the flag keeps every depth. The filter runs with `--min-magnitude`, `--place`, and `--max-depth`, before `--sort magnitude` and `--limit`.
 - Day 10, done: `--format text` prints one header line naming magnitude, depth in km, place, and UTC time, then one line per selected quake. Omitting `--format`, or `--format json`, keeps the JSON array with no header. An empty text selection prints no lines.
+- Day 11, done: a non-empty `--format text` listing ends with one count line, `1 quake` or `N quakes`. The count is the number of quake lines, not the header. Omitting `--format`, or `--format json`, keeps the JSON array with no count line. An empty text selection still prints no lines.
 
 `parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
 
@@ -70,9 +71,10 @@ npm run quakes -- --format text
 ```text
 magnitude  depth in km  place  UTC time
 M 6.2  35 km  45 km SW of Copiapo, Chile  2024-03-09T16:00:00.000Z
+1 quake
 ```
 
-When the text selection is not empty, the first line is `magnitude  depth in km  place  UTC time`. Two spaces separate those four names. Each following line is magnitude, then `depthKm` with a `km` suffix, then `place`, then `time` formatted as a UTC ISO-8601 string (`Date.toISOString()`). Two spaces separate those four fields. Longitude and latitude stay on the quake object and are not printed on the line. JSON output still leaves `time` as epoch milliseconds; only the text line converts it.
+When the text selection is not empty, the first line is `magnitude  depth in km  place  UTC time`. Two spaces separate those four names. Each following line is magnitude, then `depthKm` with a `km` suffix, then `place`, then `time` formatted as a UTC ISO-8601 string (`Date.toISOString()`). Two spaces separate those four fields. Longitude and latitude stay on the quake object and are not printed on the line. The last line is a count of the quake lines, not of the header: one quake prints `1 quake`, and any other count prints `N quakes`. JSON output still leaves `time` as epoch milliseconds; only the text line converts it.
 
 The header is a label line, not a quake. `magnitude` names the `M` field, `depth in km` names the kilometer depth, `place` names the place text, and `UTC time` names the ISO-8601 timestamp. The four names are separated by two spaces, the same gap used between fields on a quake line. `depth in km` and `UTC time` each contain a single space, so splitting the header on two spaces yields those four names and nothing else. The header does not include `id`, longitude, or latitude.
 
@@ -89,6 +91,7 @@ magnitude  depth in km  place  UTC time
 M 4.7  35 km  low place  2024-03-09T16:00:00.000Z
 M 5  10 km  edge place  2024-03-09T16:00:00.000Z
 M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
+3 quakes
 ```
 
 `--format` with no following token throws `TypeError` (`--format requires json or text`). A token other than `json` or `text`, such as `csv`, throws `TypeError` (`--format expects json or text, received csv`). Either failure happens before `fetch`, and the message is written to stderr with exit code 1.
@@ -151,6 +154,7 @@ With that in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format
 magnitude  depth in km  place  UTC time
 M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
 M 5  10 km  edge place  2024-03-09T16:00:00.000Z
+2 quakes
 ```
 
 `--sort magnitude --limit 1 --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON. The text line is the only place that turns it into `2024-03-09T16:00:00.000Z`. The `low` quake is not in either sample.
@@ -187,6 +191,7 @@ With the in-memory list that output is:
 ```text
 magnitude  depth in km  place  UTC time
 M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
+1 quake
 ```
 
 `--place edge --format json` prints a two-space array of one object, the `edge` quake: magnitude `5`, place `edge place`, `depthKm` `10`, longitude `145.8401`, latitude `-38.3802`. `time` stays `1710000000000` in JSON.
@@ -225,9 +230,10 @@ With the in-memory list that output is:
 ```text
 magnitude  depth in km  place  UTC time
 M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
+1 quake
 ```
 
-`--max-depth 10 --format text` prints the `edge` line, `M 5  10 km  edge place  2024-03-09T16:00:00.000Z`. `--max-depth 22.4 --place high --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON.
+`--max-depth 10 --format text` prints the `edge` line, `M 5  10 km  edge place  2024-03-09T16:00:00.000Z`, and then `1 quake`. `--max-depth 22.4 --place high --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON.
 
 `--limit` counts rows after the depth filter, not features in the raw feed. `--max-depth 22.4 --limit 9` returns `edge` and `high` because `low` is already deeper than 22.4 km and the count cannot pull it back. `--max-depth 35 --place edge --sort magnitude --limit 2` returns only `edge`. When every quake is deeper than the cutoff, as with `--max-depth 9 --limit 2`, sort and limit both see an empty list. `--format json` still prints `[]` with a trailing newline, and `--format text` still prints no lines.
 
@@ -263,9 +269,10 @@ With the in-memory list that output is:
 ```text
 magnitude  depth in km  place  UTC time
 M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
+1 quake
 ```
 
-`--min-depth 35 --format text` prints the `low` line, `M 4.7  35 km  low place  2024-03-09T16:00:00.000Z`. `--min-depth 22.4 --place high --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON.
+`--min-depth 35 --format text` prints the `low` line, `M 4.7  35 km  low place  2024-03-09T16:00:00.000Z`, and then `1 quake`. `--min-depth 22.4 --place high --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON.
 
 `--limit` counts rows after the min-depth filter, not features in the raw feed. `--min-depth 22.4 --limit 9` returns `low` and `high` because `edge` is already shallower than 22.4 km and the count cannot pull it back. `--min-depth 10 --max-depth 22.4 --place edge --sort magnitude --limit 2` returns only `edge`. When every quake is shallower than the floor, as with `--min-depth 36 --limit 2`, sort and limit both see an empty list. A floor above the ceiling does the same: `--min-depth 35 --max-depth 10` keeps nothing. `--format json` still prints `[]` with a trailing newline, and `--format text` still prints no lines.
 
