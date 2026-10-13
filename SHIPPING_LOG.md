@@ -193,3 +193,7 @@ Pull request #10, "Day 11: print a text count line with --format text", was squa
 
 - Day 12 has not started. The CLI does not take `--max-magnitude`, so a magnitude ceiling cannot drop quakes before the sort and the limit.
 - JSON still prints a plain array with no count line. An empty text selection still prints no lines.
+
+## 2026-10-13 — README notes after the Day 11 merge
+
+The Day 11 text-count entry above described the tree at the squash merge. The README on `main` now records that a non-empty `--format text` listing ends with `1 quake` or `N quakes`, that the count is the number of quake lines and not the header, and that two quakes therefore end with `2 quakes` rather than `3 quakes`. It shows the Chile line ending with `1 quake` and the three in-memory lines ending with `3 quakes`. `--format json` and an omitted flag stay a two-space JSON array with no count line. An empty text selection prints no lines, including no `0 quakes` line. Sort, limit, and the filters apply to quake rows only, so the count follows that selection. The test notes describe the offline count checks and the fifty-five tests. `WEEK_PLAN.md` records squash commit `53ccd9e6d0f91ea9dfb934fc85a6ee8ca0d905a3` and sketches Day 12 (`--max-magnitude`) as unstarted. No new feed and no API key.
