@@ -100,6 +100,8 @@ Day 9 can drop a quake shallower than `--min-depth`. Day 10 adds a header line t
 
 ## Day 11 — text count
 
-Status: done
+Status: done, squash-merged to `main` in pull request #10
+
+The squash commit is `53ccd9e6d0f91ea9dfb934fc85a6ee8ca0d905a3`. `cursor/day11-text-count-df8a` was deleted after the merge. `--format text` prints one trailing count line after the quake lines. `--format json` and an omitted flag stay a JSON array with no count line. An empty text selection still prints no lines.
 
 Day 10 prints a header before the quake lines and prints nothing when the text selection is empty. Day 11 adds one trailing count line to a non-empty `--format text` listing, such as `2 quakes`. The count is the number of quake lines, not counting the header. One quake prints `1 quake`. An empty text selection still prints no lines: no header and no count. Omitting `--format`, or passing `--format json`, stays a JSON array with no count line. It stays on the existing significant-day feed: no new URL and no API key. Tests render an in-memory list and spy on `fetch`.
