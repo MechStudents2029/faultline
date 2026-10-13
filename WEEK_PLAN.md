@@ -105,3 +105,9 @@ Status: done, squash-merged to `main` in pull request #10
 The squash commit is `53ccd9e6d0f91ea9dfb934fc85a6ee8ca0d905a3`. `cursor/day11-text-count-df8a` was deleted after the merge. `--format text` prints one trailing count line after the quake lines. `--format json` and an omitted flag stay a JSON array with no count line. An empty text selection still prints no lines.
 
 Day 10 prints a header before the quake lines and prints nothing when the text selection is empty. Day 11 adds one trailing count line to a non-empty `--format text` listing, such as `2 quakes`. The count is the number of quake lines, not counting the header. One quake prints `1 quake`. An empty text selection still prints no lines: no header and no count. Omitting `--format`, or passing `--format json`, stays a JSON array with no count line. It stays on the existing significant-day feed: no new URL and no API key. Tests render an in-memory list and spy on `fetch`.
+
+## Day 12 — max magnitude
+
+Status: unstarted
+
+Day 11 prints a trailing count of quake lines when `--format text` is not empty. Day 12 can add `--max-magnitude <number>`, parsed before `fetch` the same way as `--min-magnitude`. A quake would stay when `magnitude` is less than or equal to that number. Omitting the flag would keep every magnitude. A missing or non-numeric value would throw `TypeError` before `fetch`. The filter would run with `--min-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests would filter an in-memory quake list and spy on `fetch`.
