@@ -297,6 +297,8 @@ On the in-memory list, `--max-magnitude 5` keeps `low` (4.7) and `edge` (5) and 
 
 A missing value throws `TypeError` (`--max-magnitude requires a number`). A token that is not a finite number, such as `big`, throws `TypeError` (`--max-magnitude expects a finite number, received big`). Those checks happen before `fetch`, and the message is written to stderr with exit code 1.
 
+The comparison is `magnitude <= number`. A quake at the ceiling stays. On the in-memory list, `edge` is magnitude 5, so `--max-magnitude 5` keeps it and `--max-magnitude 4.9` drops it. `--max-magnitude 4.7` keeps only `low`. `--max-magnitude 6.2` keeps `high` as well, because 6.2 is equal to the ceiling, not larger. `--max-magnitude 4.6` keeps nothing. The number uses the same scale as `magnitude`. The filter does not round a magnitude before comparing.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
