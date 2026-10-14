@@ -204,3 +204,7 @@ The Day 11 text-count entry above described the tree at the squash merge. The RE
 - A quake stays when `magnitude` is less than or equal to that number. Omitting the flag keeps every magnitude. A missing or non-numeric value throws `TypeError`.
 - The filter runs with `--min-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`.
 - `tests/maxMagnitude.test.ts` uses an in-memory list and spies on `fetch`. No new feed and no API key.
+
+## 2026-10-14 — Day 12 squash-merged
+
+Pull request #11, "Day 12: filter selected quakes by max magnitude", was squash-merged into `main`. The merge commit is `6f8134fe172431e4ded92c7a254e3ba8c4a66c0d`. It carries `readMaxMagnitude` in `src/selectQuakes.ts`, the call that runs before `fetch` in `src/quakes.ts`, `tests/maxMagnitude.test.ts`, and the README usage for `--max-magnitude`. `cursor/day12-max-magnitude-73fc` was deleted after the merge, so `main` holds one Day 12 commit rather than the branch commit plus a second copy.
