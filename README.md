@@ -303,6 +303,10 @@ The comparison is `magnitude <= number`. A quake at the ceiling stays. On the in
 
 The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`5`, `4.7`, `+5`, `6.20`, `5e0`, `4.70`). `--max-magnitude 5e0` is 5 and keeps `low` and `edge`. `--max-magnitude +5` keeps those same two. `--max-magnitude 6.20` keeps all three. `--max-magnitude 4.70` keeps `low`. `big` and `6.2m` are not finite numbers, so each throws `TypeError` (`--max-magnitude expects a finite number, received big`, and the same sentence with `6.2m`).
 
+Zero and a negative ceiling are finite numbers, so they do not throw. The in-memory magnitudes are 4.7, 5, and 6.2, all positive. `--max-magnitude 0` keeps none of them. `--max-magnitude -1` keeps none of them. Omitting the flag is the only way to keep every magnitude. A ceiling of `0` is a real filter, not the omitted flag.
+
+`--max-magnitude` and `--min-magnitude` together are an inclusive range. A quake stays when `magnitude` is greater than or equal to the floor and less than or equal to the ceiling. `--min-magnitude 4.7 --max-magnitude 5` keeps `low` and `edge` and drops `high`. `--min-magnitude 5 --max-magnitude 5` keeps only `edge`, the quake that sits on both bounds. A floor above the ceiling keeps nothing: `--min-magnitude 6 --max-magnitude 5` drops every quake, including `high` at 6.2, because 6.2 is above the ceiling, and the smaller quakes are below the floor.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
