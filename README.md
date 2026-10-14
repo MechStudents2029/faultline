@@ -299,6 +299,10 @@ A missing value throws `TypeError` (`--max-magnitude requires a number`). A toke
 
 The comparison is `magnitude <= number`. A quake at the ceiling stays. On the in-memory list, `edge` is magnitude 5, so `--max-magnitude 5` keeps it and `--max-magnitude 4.9` drops it. `--max-magnitude 4.7` keeps only `low`. `--max-magnitude 6.2` keeps `high` as well, because 6.2 is equal to the ceiling, not larger. `--max-magnitude 4.6` keeps nothing. The number uses the same scale as `magnitude`. The filter does not round a magnitude before comparing.
 
+`readMaxMagnitude` uses the same argv shape as `readMinMagnitude`: the flag is its own token, and the value is the next token. `--max-magnitude=5` is not that flag, so every magnitude stays. The flag name is case-sensitive. `--Max-magnitude 5` does not select a magnitude filter. Those checks run before `fetch`.
+
+The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`5`, `4.7`, `+5`, `6.20`, `5e0`, `4.70`). `--max-magnitude 5e0` is 5 and keeps `low` and `edge`. `--max-magnitude +5` keeps those same two. `--max-magnitude 6.20` keeps all three. `--max-magnitude 4.70` keeps `low`. `big` and `6.2m` are not finite numbers, so each throws `TypeError` (`--max-magnitude expects a finite number, received big`, and the same sentence with `6.2m`).
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
