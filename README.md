@@ -324,6 +324,8 @@ M 5  10 km  edge place  2024-03-09T16:00:00.000Z
 
 `--max-magnitude 4.7 --format text` prints the `low` line, `M 4.7  35 km  low place  2024-03-09T16:00:00.000Z`, and then `1 quake`. `--max-magnitude 5 --place edge --format json` prints a two-space array of one object, the `edge` quake: magnitude `5`, place `edge place`, `depthKm` `10`, longitude `145.8401`, latitude `-38.3802`. `time` stays `1710000000000` in JSON.
 
+`--limit` counts rows after the max-magnitude filter, not features in the raw feed. `--max-magnitude 5 --limit 9` returns `low` and `edge` because `high` is already larger than 5 and the count cannot pull it back. `--max-magnitude 6.2 --place edge --sort magnitude --limit 2` returns only `edge`. When every quake is larger than the ceiling, as with `--max-magnitude 4 --limit 2`, sort and limit both see an empty list. `--format json` still prints `[]` with a trailing newline, and `--format text` still prints no lines.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
