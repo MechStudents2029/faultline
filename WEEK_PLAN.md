@@ -108,6 +108,6 @@ Day 10 prints a header before the quake lines and prints nothing when the text s
 
 ## Day 12 — max magnitude
 
-Status: unstarted
+Status: done
 
-Day 11 prints a trailing count of quake lines when `--format text` is not empty. Day 12 can add `--max-magnitude <number>`, parsed before `fetch` the same way as `--min-magnitude`. A quake would stay when `magnitude` is less than or equal to that number. Omitting the flag would keep every magnitude. A missing or non-numeric value would throw `TypeError` before `fetch`. The filter would run with `--min-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests would filter an in-memory quake list and spy on `fetch`.
+Day 11 prints a trailing count of quake lines when `--format text` is not empty. Day 12 adds `--max-magnitude <number>`, parsed before `fetch` the same way as `--min-magnitude`. A quake stays when `magnitude` is less than or equal to that number. Omitting the flag keeps every magnitude. A missing or non-numeric value throws `TypeError` before `fetch`. The filter runs with `--min-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests filter an in-memory quake list and spy on `fetch`.

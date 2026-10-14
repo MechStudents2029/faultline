@@ -1,6 +1,7 @@
 import type { Quake } from "./parseQuakes.js";
 
 const MIN_MAGNITUDE_FLAG = "--min-magnitude";
+const MAX_MAGNITUDE_FLAG = "--max-magnitude";
 const PLACE_FLAG = "--place";
 const MAX_DEPTH_FLAG = "--max-depth";
 const MIN_DEPTH_FLAG = "--min-depth";
@@ -27,6 +28,31 @@ export function readMinMagnitude(argv: readonly string[]): number | undefined {
   if (!isFiniteNumberToken(raw)) {
     throw new TypeError(
       `--min-magnitude expects a finite number, received ${raw}`,
+    );
+  }
+
+  return Number(raw);
+}
+
+/**
+ * Read `--max-magnitude <number>` from CLI args.
+ * Returns undefined when the flag is omitted, which keeps every magnitude.
+ * A missing or non-numeric value throws `TypeError`.
+ */
+export function readMaxMagnitude(argv: readonly string[]): number | undefined {
+  const index = argv.indexOf(MAX_MAGNITUDE_FLAG);
+  if (index === -1) {
+    return undefined;
+  }
+
+  const raw = argv[index + 1];
+  if (raw === undefined) {
+    throw new TypeError("--max-magnitude requires a number");
+  }
+
+  if (!isFiniteNumberToken(raw)) {
+    throw new TypeError(
+      `--max-magnitude expects a finite number, received ${raw}`,
     );
   }
 
@@ -149,10 +175,10 @@ export function readSort(argv: readonly string[]): QuakeSort | undefined {
 
 /**
  * CLI selection on a `parseQuakes` result.
- * Drops quakes below `--min-magnitude`, quakes whose `place` does not
- * contain `--place`, quakes deeper than `--max-depth`, and quakes
- * shallower than `--min-depth`, optionally orders by magnitude
- * descending, then keeps the first `--limit` rows.
+ * Drops quakes below `--min-magnitude`, quakes above `--max-magnitude`,
+ * quakes whose `place` does not contain `--place`, quakes deeper than
+ * `--max-depth`, and quakes shallower than `--min-depth`, optionally
+ * orders by magnitude descending, then keeps the first `--limit` rows.
  * Omitted flags keep the whole list in feed order.
  */
 export function selectQuakes(
@@ -160,16 +186,22 @@ export function selectQuakes(
   argv: readonly string[],
 ): Quake[] {
   const minMagnitude = readMinMagnitude(argv);
+  const maxMagnitude = readMaxMagnitude(argv);
   const place = readPlace(argv);
   const maxDepth = readMaxDepth(argv);
   const minDepth = readMinDepth(argv);
   const limit = readLimit(argv);
   const sort = readSort(argv);
 
-  const byMagnitude =
+  const byMinMagnitude =
     minMagnitude === undefined
       ? [...quakes]
       : quakes.filter((quake) => quake.magnitude >= minMagnitude);
+
+  const byMagnitude =
+    maxMagnitude === undefined
+      ? byMinMagnitude
+      : byMinMagnitude.filter((quake) => quake.magnitude <= maxMagnitude);
 
   const byPlace =
     place === undefined

@@ -3,6 +3,7 @@ import { parseQuakes } from "./parseQuakes.js";
 import {
   readLimit,
   readMaxDepth,
+  readMaxMagnitude,
   readMinDepth,
   readMinMagnitude,
   readPlace,
@@ -27,6 +28,7 @@ async function loadSignificantDay(): Promise<unknown> {
 async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   readMinMagnitude(argv);
+  readMaxMagnitude(argv);
   readPlace(argv);
   readMaxDepth(argv);
   readMinDepth(argv);

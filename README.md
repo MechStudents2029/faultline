@@ -1,6 +1,6 @@
 # faultline
 
-Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`. Day 8 adds `--max-depth`. Day 9 adds `--min-depth`. Day 10 adds a header line to `--format text`. Day 11 adds a trailing count line to a non-empty `--format text` listing.
+Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`. Day 8 adds `--max-depth`. Day 9 adds `--min-depth`. Day 10 adds a header line to `--format text`. Day 11 adds a trailing count line to a non-empty `--format text` listing. Day 12 adds `--max-magnitude`.
 
 ## Project goals
 
@@ -17,6 +17,7 @@ Faultline is a one-week resume CLI. Someone should be able to clone the repo and
 - Day 9, done: `--min-depth <km>` keeps quakes whose `depthKm` is greater than or equal to that number. Omitting the flag keeps every depth. The filter runs with `--min-magnitude`, `--place`, and `--max-depth`, before `--sort magnitude` and `--limit`.
 - Day 10, done: `--format text` prints one header line naming magnitude, depth in km, place, and UTC time, then one line per selected quake. Omitting `--format`, or `--format json`, keeps the JSON array with no header. An empty text selection prints no lines.
 - Day 11, done: a non-empty `--format text` listing ends with one count line, `1 quake` or `N quakes`. The count is the number of quake lines, not the header. Omitting `--format`, or `--format json`, keeps the JSON array with no count line. An empty text selection still prints no lines.
+- Day 12, done: `--max-magnitude <number>` keeps quakes whose `magnitude` is less than or equal to that number. Omitting the flag keeps every magnitude. The filter runs with `--min-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`.
 
 `parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
 
@@ -126,7 +127,7 @@ When that selection is empty, `--format text` writes no lines and does not write
 
 ## `--limit` and `--sort`
 
-`readLimit` and `readSort` run on `process.argv` before `fetch`, the same way `readMinMagnitude` and `readFormat` do. Selection order is fixed: drop quakes below `--min-magnitude`, drop quakes whose `place` does not contain `--place` when that flag is set, drop quakes whose `depthKm` is greater than `--max-depth` when that flag is set, drop quakes whose `depthKm` is less than `--min-depth` when that flag is set, then order by magnitude descending when `--sort magnitude` is set, then keep the first `--limit` rows. `--format json` and `--format text` both print that same list.
+`readLimit` and `readSort` run on `process.argv` before `fetch`, the same way `readMinMagnitude` and `readFormat` do. Selection order is fixed: drop quakes below `--min-magnitude`, drop quakes above `--max-magnitude`, drop quakes whose `place` does not contain `--place` when that flag is set, drop quakes whose `depthKm` is greater than `--max-depth` when that flag is set, drop quakes whose `depthKm` is less than `--min-depth` when that flag is set, then order by magnitude descending when `--sort magnitude` is set, then keep the first `--limit` rows. `--format json` and `--format text` both print that same list.
 
 ```bash
 npm run quakes -- --limit 2
@@ -284,6 +285,18 @@ M 6.2  22.4 km  high place  2024-03-09T16:00:00.000Z
 
 `--limit` counts rows after the min-depth filter, not features in the raw feed. `--min-depth 22.4 --limit 9` returns `low` and `high` because `edge` is already shallower than 22.4 km and the count cannot pull it back. `--min-depth 10 --max-depth 22.4 --place edge --sort magnitude --limit 2` returns only `edge`. When every quake is shallower than the floor, as with `--min-depth 36 --limit 2`, sort and limit both see an empty list. A floor above the ceiling does the same: `--min-depth 35 --max-depth 10` keeps nothing. `--format json` still prints `[]` with a trailing newline, and `--format text` still prints no lines.
 
+## `--max-magnitude` filter
+
+`readMaxMagnitude` runs on `process.argv` before `fetch`, the same way `readMinMagnitude`, `readMinDepth`, `readMaxDepth`, `readPlace`, `readLimit`, `readSort`, and `readFormat` do. A quake stays when `magnitude` is less than or equal to the flag's number. Omitting `--max-magnitude` keeps every magnitude. The filter runs with `--min-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`.
+
+```bash
+npm run quakes -- --max-magnitude 5
+```
+
+On the in-memory list, `--max-magnitude 5` keeps `low` (4.7) and `edge` (5) and drops `high` (6.2).
+
+A missing value throws `TypeError` (`--max-magnitude requires a number`). A token that is not a finite number, such as `big`, throws `TypeError` (`--max-magnitude expects a finite number, received big`). Those checks happen before `fetch`, and the message is written to stderr with exit code 1.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
@@ -360,7 +373,9 @@ That file has ten tests. One expects `--place high` to leave the parsed array in
 
 `tests/maxDepth.test.ts` uses that same in-memory list. Depths are 35 km (`low`), 10 km (`edge`), and 22.4 km (`high`). `--max-depth 22.4` keeps `edge` and `high`. Omitting the flag keeps all three. A missing or non-numeric value throws `TypeError`. The tests spy on `globalThis.fetch`.
 
-`tests/minDepth.test.ts` uses that same in-memory list. Depths are 35 km (`low`), 10 km (`edge`), and 22.4 km (`high`). `--min-depth 22.4` keeps `high` and `low`. Omitting the flag keeps all three. A missing or non-numeric value throws `TypeError`. The tests spy on `globalThis.fetch`. `npm test` runs those fifty-five tests in seven files and does not call USGS. The text cases in `tests/minDepth.test.ts` and `tests/maxDepth.test.ts` expect the header, the single quake line, and then `1 quake`. Their empty selections still expect `""` for text and `[]\n` for JSON, with no count line.
+`tests/minDepth.test.ts` uses that same in-memory list. Depths are 35 km (`low`), 10 km (`edge`), and 22.4 km (`high`). `--min-depth 22.4` keeps `high` and `low`. Omitting the flag keeps all three. A missing or non-numeric value throws `TypeError`. The tests spy on `globalThis.fetch`. The text cases in `tests/minDepth.test.ts` and `tests/maxDepth.test.ts` expect the header, the single quake line, and then `1 quake`. Their empty selections still expect `""` for text and `[]\n` for JSON, with no count line.
+
+`tests/maxMagnitude.test.ts` uses that same in-memory list. Magnitudes are 4.7 (`low`), 5 (`edge`), and 6.2 (`high`). `--max-magnitude 5` keeps `low` and `edge`. Omitting the flag keeps all three. A missing or non-numeric value throws `TypeError`. The tests spy on `globalThis.fetch`. `npm test` runs those sixty-five tests in eight files and does not call USGS.
 
 That file has ten tests. One expects `--min-depth 22.4` to leave the parsed array in feed order (`low`, `edge`, `high`) while the selected copy is `low`, `high`. One expects `readMinDepth([])` to be `undefined`. One expects `TypeError` for a missing value (`--min-depth requires a number`) and for `shallow` and `35km`, and it spies on `globalThis.fetch`. The boundary test expects `22.4` to keep `low` and `high`, `22.5` and `35` to keep `low`, `10` to keep all three, and `35.1` to keep none. The token test expects `--min-depth=10` and `--Min-depth` to leave the flag unread. The order test expects both flag orders of `--min-depth 22.4 --max-depth 35 --place place --min-magnitude 5 --sort magnitude --limit 1` to keep `high`, `--min-depth 10 --max-depth 22.4 --place edge --sort magnitude --limit 2` to keep `edge`, and `--min-depth 22.4 --limit 9` to keep `low` then `high`. The empty-match test expects `--min-depth 36 --limit 2` to render no text lines and a JSON `[]`, and `--min-depth 35 --max-depth 10` to keep none. The format test expects the header, then the `low` text line, then `1 quake`, and a two-space JSON array whose only id is `high`, with `time` still `1710000000000`. The number-token test expects `2.24e1` and `+22.4` to keep `low` and `high`, `35.0` to keep `low`, and `1e1` to keep all three. The floor test expects `0` and `-1` to keep all three positive depths. Each fetch spy asserts it was not called.
 
@@ -374,4 +389,4 @@ That file has ten tests. One expects `--min-depth 22.4` to leave the parsed arra
 
 https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson
 
-USGS serves that summary to anonymous clients. The body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day. The same URL is the `SIGNIFICANT_DAY_URL` constant in `src/quakes.ts` and `metadata.url` on the fixture. `npm test` still reads `fixtures/significant_day.sample.geojson` from disk, so a USGS outage or a missing network does not fail the suite. The CLI is the only path that opens a socket, and only after `--min-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--limit`, `--sort`, and `--format` parse.
+USGS serves that summary to anonymous clients. The body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day. The same URL is the `SIGNIFICANT_DAY_URL` constant in `src/quakes.ts` and `metadata.url` on the fixture. `npm test` still reads `fixtures/significant_day.sample.geojson` from disk, so a USGS outage or a missing network does not fail the suite. The CLI is the only path that opens a socket, and only after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--limit`, `--sort`, and `--format` parse.
