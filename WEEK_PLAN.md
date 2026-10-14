@@ -113,3 +113,9 @@ Status: done, squash-merged to `main` in pull request #11
 The squash commit is `6f8134fe172431e4ded92c7a254e3ba8c4a66c0d`. `cursor/day12-max-magnitude-73fc` was deleted after the merge. `readMaxMagnitude` runs before `fetch`. `--max-magnitude` keeps a quake when `magnitude` is less than or equal to the number. Omitting the flag keeps every magnitude. A missing or non-numeric value throws `TypeError` before `fetch`.
 
 Day 11 prints a trailing count of quake lines when `--format text` is not empty. Day 12 adds `--max-magnitude <number>`, parsed before `fetch` the same way as `--min-magnitude`. A quake stays when `magnitude` is less than or equal to that number. Omitting the flag keeps every magnitude. A missing or non-numeric value throws `TypeError` before `fetch`. The filter runs with `--min-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests filter an in-memory quake list and spy on `fetch`.
+
+## Day 13 — min time
+
+Status: unstarted
+
+Day 12 can drop a quake larger than `--max-magnitude`. Day 13 can add `--min-time <epoch-ms>`, parsed before `fetch` the same way as `--min-magnitude`. A quake would stay when `time` is greater than or equal to that number. Omitting the flag would keep every time. A missing or non-numeric value would throw `TypeError` before `fetch`. The filter would run with `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests would filter an in-memory quake list and spy on `fetch`.
