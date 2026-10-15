@@ -6,6 +6,7 @@ import {
   readMaxMagnitude,
   readMinDepth,
   readMinMagnitude,
+  readMinTime,
   readPlace,
   readSort,
   selectQuakes,
@@ -32,6 +33,7 @@ async function main(): Promise<void> {
   readPlace(argv);
   readMaxDepth(argv);
   readMinDepth(argv);
+  readMinTime(argv);
   readLimit(argv);
   readSort(argv);
   const format = readFormat(argv);

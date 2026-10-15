@@ -217,3 +217,10 @@ Pull request #11, "Day 12: filter selected quakes by max magnitude", was squash-
 ## 2026-10-14 — README notes after the Day 12 merge
 
 The Day 12 max-magnitude entry above described the tree at the squash merge. The README on `main` now records that `--max-magnitude` is an inclusive ceiling (`5` keeps `edge`, `4.9` drops it, `4.7` keeps `low`, `6.2` keeps `high`, and `4.6` keeps nothing), that `--max-magnitude=5` and `--Max-magnitude` do not select the filter, and that `5e0`, `+5`, `6.20`, and `4.70` are finite magnitude tokens while `big` and `6.2m` throw before `fetch`. Zero and `-1` are real ceilings and keep none of the positive in-memory magnitudes. `--min-magnitude` and `--max-magnitude` together are an inclusive range. `--min-magnitude 5 --max-magnitude 5` keeps `edge`. A floor above the ceiling (`--min-magnitude 6 --max-magnitude 5`) keeps nothing. It shows that `--max-magnitude 5 --min-magnitude 4.7 --min-depth 10 --max-depth 35 --place place --sort magnitude --limit 1 --format text` and the swapped flag order print the same line, the `edge` quake, and that `--max-magnitude 5 --place edge --format json` is one object with `time` still in epoch milliseconds. A limit counts rows after the magnitude ceiling. `--max-magnitude 4 --limit 2` still prints `[]` as JSON and no text lines. The test notes list the ten `tests/maxMagnitude.test.ts` cases and the fetch spies. `WEEK_PLAN.md` records squash commit `6f8134fe172431e4ded92c7a254e3ba8c4a66c0d` and sketches Day 13 (`--min-time`) as unstarted. No new feed and no API key.
+
+## 2026-10-15 — Day 13 min time
+
+- `npm run quakes` accepts `--min-time <epoch-ms>`, read from argv before `fetch`.
+- A quake stays when `time` is greater than or equal to that number. Omitting the flag keeps every time. A missing or non-numeric value throws `TypeError`.
+- The filter runs with `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`.
+- `tests/minTime.test.ts` uses an in-memory list and spies on `fetch`. No new feed and no API key.

@@ -116,6 +116,6 @@ Day 11 prints a trailing count of quake lines when `--format text` is not empty.
 
 ## Day 13 — min time
 
-Status: unstarted
+Status: done
 
-Day 12 can drop a quake larger than `--max-magnitude`. Day 13 can add `--min-time <epoch-ms>`, parsed before `fetch` the same way as `--min-magnitude`. A quake would stay when `time` is greater than or equal to that number. Omitting the flag would keep every time. A missing or non-numeric value would throw `TypeError` before `fetch`. The filter would run with `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests would filter an in-memory quake list and spy on `fetch`.
+Day 12 can drop a quake larger than `--max-magnitude`. Day 13 adds `--min-time <epoch-ms>`, parsed before `fetch` the same way as `--min-magnitude`. A quake stays when `time` is greater than or equal to that number. Omitting the flag keeps every time. A missing or non-numeric value throws `TypeError` before `fetch`. The filter runs with `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests filter an in-memory quake list and spy on `fetch`.
