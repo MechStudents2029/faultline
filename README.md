@@ -345,6 +345,8 @@ The comparison is `time >= epoch-ms`. A quake at the floor stays. On the in-memo
 
 The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`1710000000000`, `+1710000000000`, `1710000000000.0`, `1.71e12`, `1.7099136e12`). `--min-time 1.71e12` is `1710000000000` and keeps `edge` and `high`. `--min-time +1710000000000` keeps those same two. `--min-time 1710086400000.0` keeps `high`. `--min-time 1.7099136e12` is `1709913600000` and keeps all three. `soon` and `1710000000000ms` are not finite numbers, so each throws `TypeError` (`--min-time expects a finite number, received soon`, and the same sentence with `1710000000000ms`).
 
+Zero and a negative floor are finite numbers, so they do not throw. The in-memory times are `1709913600000`, `1710000000000`, and `1710086400000`, all after the epoch. `--min-time 0` keeps all three. `--min-time -1` keeps all three. That result matches an omitted flag on this list only because none of the times are negative. A floor of `0` is a real filter, not the omitted flag. Omitting the flag is what keeps every time, including a time before the epoch.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
