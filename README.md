@@ -341,6 +341,10 @@ A missing value throws `TypeError` (`--min-time requires a number`). A token tha
 
 The comparison is `time >= epoch-ms`. A quake at the floor stays. On the in-memory list, `edge` is `1710000000000`, so `--min-time 1710000000000` keeps it and `--min-time 1710000000001` drops it. `--min-time 1710086400000` keeps only `high`. `--min-time 1709913600000` keeps `low` as well, because that time is equal to the floor, not earlier. `--min-time 1710086400001` keeps nothing. The number is epoch milliseconds, the same unit as `time`. The filter does not convert seconds or an ISO date.
 
+`readMinTime` uses the same argv shape as `readMinMagnitude`: the flag is its own token, and the value is the next token. `--min-time=1710000000000` is not that flag, so every time stays. The flag name is case-sensitive. `--Min-time 1710000000000` does not select a time filter. Those checks run before `fetch`.
+
+The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`1710000000000`, `+1710000000000`, `1710000000000.0`, `1.71e12`, `1.7099136e12`). `--min-time 1.71e12` is `1710000000000` and keeps `edge` and `high`. `--min-time +1710000000000` keeps those same two. `--min-time 1710086400000.0` keeps `high`. `--min-time 1.7099136e12` is `1709913600000` and keeps all three. `soon` and `1710000000000ms` are not finite numbers, so each throws `TypeError` (`--min-time expects a finite number, received soon`, and the same sentence with `1710000000000ms`).
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
