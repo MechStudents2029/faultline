@@ -224,3 +224,7 @@ The Day 12 max-magnitude entry above described the tree at the squash merge. The
 - A quake stays when `time` is greater than or equal to that number. Omitting the flag keeps every time. A missing or non-numeric value throws `TypeError`.
 - The filter runs with `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`.
 - `tests/minTime.test.ts` uses an in-memory list and spies on `fetch`. No new feed and no API key.
+
+## 2026-10-15 — Day 13 squash-merged
+
+Pull request #12, "Day 13: filter selected quakes by min time", was squash-merged into `main`. The merge commit is `07d3303ba5ad8617df652a85d1d7c19200a34697`. It carries `readMinTime` in `src/selectQuakes.ts`, the call that runs before `fetch` in `src/quakes.ts`, `tests/minTime.test.ts`, and the README usage for `--min-time`. `cursor/day13-min-time-24cb` was deleted after the merge, so `main` holds one Day 13 commit rather than the branch commit plus a second copy.
