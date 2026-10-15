@@ -364,6 +364,8 @@ M 5  10 km  edge place  2024-03-09T16:00:00.000Z
 
 `--min-time 1710086400000 --format text` prints the `high` line, `M 6.2  22.4 km  high place  2024-03-10T16:00:00.000Z`, and then `1 quake`. `--min-time 1710000000000 --place edge --format json` prints a two-space array of one object, the `edge` quake: magnitude `5`, place `edge place`, `depthKm` `10`, longitude `145.8401`, latitude `-38.3802`. `time` stays `1710000000000` in JSON.
 
+`--limit` counts rows after the min-time filter, not features in the raw feed. `--min-time 1710000000000 --limit 9` returns `edge` and `high` because `low` is already earlier than that floor and the count cannot pull it back. `--min-time 1710000000000 --place edge --sort magnitude --limit 2` returns only `edge`. When every quake is earlier than the floor, as with `--min-time 1710086400001 --limit 2`, sort and limit both see an empty list. `--format json` still prints `[]` with a trailing newline, and `--format text` still prints no lines.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
