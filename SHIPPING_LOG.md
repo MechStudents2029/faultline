@@ -228,3 +228,8 @@ The Day 12 max-magnitude entry above described the tree at the squash merge. The
 ## 2026-10-15 — Day 13 squash-merged
 
 Pull request #12, "Day 13: filter selected quakes by min time", was squash-merged into `main`. The merge commit is `07d3303ba5ad8617df652a85d1d7c19200a34697`. It carries `readMinTime` in `src/selectQuakes.ts`, the call that runs before `fetch` in `src/quakes.ts`, `tests/minTime.test.ts`, and the README usage for `--min-time`. `cursor/day13-min-time-24cb` was deleted after the merge, so `main` holds one Day 13 commit rather than the branch commit plus a second copy.
+
+## Still open after the Day 13 merge
+
+- Day 14 has not started. The CLI does not take `--max-time`, so a time ceiling cannot drop quakes before the sort and the limit.
+- JSON still prints a plain array with no count line. An empty text selection still prints no lines.
