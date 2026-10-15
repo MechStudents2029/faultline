@@ -339,6 +339,8 @@ On the in-memory list in `tests/minTime.test.ts`, `--min-time 1710000000000` kee
 
 A missing value throws `TypeError` (`--min-time requires a number`). A token that is not a finite number, such as `soon`, throws `TypeError` (`--min-time expects a finite number, received soon`). Those checks happen before `fetch`, and the message is written to stderr with exit code 1.
 
+The comparison is `time >= epoch-ms`. A quake at the floor stays. On the in-memory list, `edge` is `1710000000000`, so `--min-time 1710000000000` keeps it and `--min-time 1710000000001` drops it. `--min-time 1710086400000` keeps only `high`. `--min-time 1709913600000` keeps `low` as well, because that time is equal to the floor, not earlier. `--min-time 1710086400001` keeps nothing. The number is epoch milliseconds, the same unit as `time`. The filter does not convert seconds or an ISO date.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
