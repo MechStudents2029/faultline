@@ -116,6 +116,8 @@ Day 11 prints a trailing count of quake lines when `--format text` is not empty.
 
 ## Day 13 — min time
 
-Status: done
+Status: done, squash-merged to `main` in pull request #12
+
+The squash commit is `07d3303ba5ad8617df652a85d1d7c19200a34697`. `cursor/day13-min-time-24cb` was deleted after the merge. `readMinTime` runs before `fetch`. `--min-time` keeps a quake when `time` is greater than or equal to the number. Omitting the flag keeps every time. A missing or non-numeric value throws `TypeError` before `fetch`.
 
 Day 12 can drop a quake larger than `--max-magnitude`. Day 13 adds `--min-time <epoch-ms>`, parsed before `fetch` the same way as `--min-magnitude`. A quake stays when `time` is greater than or equal to that number. Omitting the flag keeps every time. A missing or non-numeric value throws `TypeError` before `fetch`. The filter runs with `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, and `--min-depth`, before `--sort magnitude` and `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests filter an in-memory quake list and spy on `fetch`.
