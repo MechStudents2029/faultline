@@ -385,6 +385,8 @@ The comparison is `time <= epoch-ms`. A quake at the ceiling stays. On the in-me
 
 The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`1710000000000`, `+1710000000000`, `1709913600000.0`, `1.71e12`, `1.7100864e12`). `--max-time 1.71e12` is `1710000000000` and keeps `low` and `edge`. `--max-time +1710000000000` keeps those same two. `--max-time 1709913600000.0` keeps `low`. `--max-time 1.7100864e12` is `1710086400000` and keeps all three. `soon` and `1710000000000ms` are not finite numbers, so each throws `TypeError` (`--max-time expects a finite number, received soon`, and the same sentence with `1710000000000ms`).
 
+Zero and a negative ceiling are finite numbers, so they do not throw. The in-memory times are `1709913600000`, `1710000000000`, and `1710086400000`, all after the epoch. `--max-time 0` keeps none of them. `--max-time -1` keeps none of them. That is the opposite of an omitted flag on this list: every in-memory time is later than both cutoffs. A ceiling of `0` is a real filter, not the omitted flag. Omitting the flag is what keeps every time, including a time after the epoch.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
