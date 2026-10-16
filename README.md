@@ -168,9 +168,9 @@ M 5  10 km  edge place  2024-03-09T16:00:00.000Z
 
 `--sort magnitude --limit 1 --format json` prints a two-space array of one object, the `high` quake: magnitude `6.2`, place `high place`, `depthKm` `22.4`, longitude `140.9`, latitude `32.6`. `time` stays `1710000000000` in JSON. The text line is the only place that turns it into `2024-03-09T16:00:00.000Z`. The `low` quake is not in either sample.
 
-The header is not part of the selected list. `--sort magnitude` orders quake rows only, and `--limit` counts quake rows only. The header stays the first line of a non-empty text listing and is not repeated. `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, and `--min-time` run before that line is chosen. A filter that leaves one quake prints the header plus that one line. A filter that leaves none prints neither. Flag order does not change the header text.
+The header is not part of the selected list. `--sort magnitude` orders quake rows only, and `--limit` counts quake rows only. The header stays the first line of a non-empty text listing and is not repeated. `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time` run before that line is chosen. A filter that leaves one quake prints the header plus that one line. A filter that leaves none prints neither. Flag order does not change the header text.
 
-The count line is not part of the selected list either. `--limit` counts quake rows, not the header and not the count line. A filter that leaves two quakes prints the header, those two lines, and `2 quakes`. A filter that leaves one prints the header, that line, and `1 quake`. A filter that leaves none prints no count. On the in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format text` ends with `2 quakes`. `--place high --format text`, `--max-depth 10 --format text`, `--min-depth 35 --format text`, `--max-magnitude 4.7 --format text`, and, on the min-time list, `--min-time 1710086400000 --format text` each end with `1 quake`.
+The count line is not part of the selected list either. `--limit` counts quake rows, not the header and not the count line. A filter that leaves two quakes prints the header, those two lines, and `2 quakes`. A filter that leaves one prints the header, that line, and `1 quake`. A filter that leaves none prints no count. On the in-memory list, `--min-magnitude 5 --sort magnitude --limit 2 --format text` ends with `2 quakes`. `--place high --format text`, `--max-depth 10 --format text`, `--min-depth 35 --format text`, `--max-magnitude 4.7 --format text`, and, on the min-time list, `--min-time 1710086400000 --format text` each end with `1 quake`. On the max-time list, `--max-time 1709913600000 --format text` ends with `1 quake`.
 
 ## `--place` filter
 
@@ -388,6 +388,23 @@ The accepted token is a finite decimal, optionally signed, with an optional frac
 Zero and a negative ceiling are finite numbers, so they do not throw. The in-memory times are `1709913600000`, `1710000000000`, and `1710086400000`, all after the epoch. `--max-time 0` keeps none of them. `--max-time -1` keeps none of them. That is the opposite of an omitted flag on this list: every in-memory time is later than both cutoffs. A ceiling of `0` is a real filter, not the omitted flag. Omitting the flag is what keeps every time, including a time after the epoch.
 
 `--min-time` and `--max-time` together are an inclusive window. A quake stays when `time` is greater than or equal to the floor and less than or equal to the ceiling. On the in-memory list, `--min-time 1710000000000 --max-time 1710000000000` keeps `edge` and drops `low` and `high`. `--min-time 1709913600000 --max-time 1710086400000` keeps all three, because each time sits on a bound. A floor above the ceiling keeps nothing: `--min-time 1710086400000 --max-time 1710000000000` drops `high` for the ceiling and drops `low` and `edge` for the floor. Omitting either flag leaves that side open. `--max-time 1710000000000` with no `--min-time` still keeps `low` and `edge`.
+
+`--max-time`, `--min-time`, `--max-magnitude`, `--min-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--sort`, `--limit`, and `--format` each look up their own flag. One flag's value is not consumed by the other, and the order of the flags does not change the selection. These two commands keep the quake whose time is `1710000000000`, whose magnitude is at most 5 and at least 4.7, whose depth is at least 10 km and at most 35 km, and whose place contains `place`, and they print the same text line:
+
+```bash
+npm run quakes -- --max-time 1710000000000 --min-time 1710000000000 --max-magnitude 5 --min-magnitude 4.7 --min-depth 10 --max-depth 35 --place place --sort magnitude --limit 1 --format text
+npm run quakes -- --format text --limit 1 --sort magnitude --place place --max-depth 35 --min-depth 10 --min-magnitude 4.7 --max-magnitude 5 --min-time 1710000000000 --max-time 1710000000000
+```
+
+With the max-time in-memory list that output is:
+
+```text
+magnitude  depth in km  place  UTC time
+M 5  10 km  edge place  2024-03-09T16:00:00.000Z
+1 quake
+```
+
+`--max-time 1709913600000 --format text` prints the `low` line, `M 4.7  35 km  low place  2024-03-08T16:00:00.000Z`, and then `1 quake`. `--max-time 1710000000000 --place edge --format json` prints a two-space array of one object, the `edge` quake: magnitude `5`, place `edge place`, `depthKm` `10`, longitude `145.8401`, latitude `-38.3802`. `time` stays `1710000000000` in JSON.
 
 ## Location fields
 
