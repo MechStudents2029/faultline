@@ -248,3 +248,12 @@ The Day 13 min-time entry above described the tree at the squash merge. The READ
 ## 2026-10-16 — Day 14 squash-merged
 
 Pull request #13, "Day 14: filter selected quakes by max time", was squash-merged into `main`. The merge commit is `998007b675656a262498237525b72b91f7dd2446`. It carries `readMaxTime` in `src/selectQuakes.ts`, the call that runs before `fetch` in `src/quakes.ts`, `tests/maxTime.test.ts`, and the README usage for `--max-time`. `cursor/day14-max-time-a4f0` was deleted after the merge, so `main` holds one Day 14 commit rather than the branch commit plus a second copy.
+
+## Still open after the Day 14 merge
+
+- Day 15 has not started. The CLI does not take `--sort time`, so a time window cannot be listed oldest-first before the limit.
+- JSON still prints a plain array with no count line. An empty text selection still prints no lines.
+
+## 2026-10-16 — README notes after the Day 14 merge
+
+The Day 14 max-time entry above described the tree at the squash merge. The README on `main` now records that `--max-time` is an inclusive epoch-millisecond ceiling (`1710000000000` keeps `edge`, `1709999999999` drops it, `1709913600000` keeps `low`, `1710086400000` keeps `high`, and `1709913599999` keeps nothing), that `--max-time=1710000000000` and `--Max-time` do not select the filter, and that `1.71e12`, `+1710000000000`, `1709913600000.0`, and `1.7100864e12` are finite time tokens while `soon` and `1710000000000ms` throw before `fetch`. Zero and `-1` are real ceilings and keep none of the positive in-memory times. `--min-time` and `--max-time` together are an inclusive window. `--min-time 1710000000000 --max-time 1710000000000` keeps `edge`. A floor above the ceiling (`--min-time 1710086400000 --max-time 1710000000000`) keeps nothing. It shows that `--max-time 1710000000000 --min-time 1710000000000 --max-magnitude 5 --min-magnitude 4.7 --min-depth 10 --max-depth 35 --place place --sort magnitude --limit 1 --format text` and the swapped flag order print the same line, the `edge` quake, and that `--max-time 1710000000000 --place edge --format json` is one object with `time` still in epoch milliseconds. A limit counts rows after the time ceiling. `--max-time 1709913599999 --limit 2` still prints `[]` as JSON and no text lines. The test notes list the ten `tests/maxTime.test.ts` cases and the fetch spies. `WEEK_PLAN.md` records squash commit `998007b675656a262498237525b72b91f7dd2446` and sketches Day 15 (`--sort time`) as unstarted. No new feed and no API key.
