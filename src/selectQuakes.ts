@@ -6,6 +6,7 @@ const PLACE_FLAG = "--place";
 const MAX_DEPTH_FLAG = "--max-depth";
 const MIN_DEPTH_FLAG = "--min-depth";
 const MIN_TIME_FLAG = "--min-time";
+const MAX_TIME_FLAG = "--max-time";
 const LIMIT_FLAG = "--limit";
 const SORT_FLAG = "--sort";
 
@@ -134,6 +135,31 @@ export function readMinTime(argv: readonly string[]): number | undefined {
 }
 
 /**
+ * Read `--max-time <epoch-ms>` from CLI args.
+ * Returns undefined when the flag is omitted, which keeps every time.
+ * A missing or non-numeric value throws `TypeError`.
+ */
+export function readMaxTime(argv: readonly string[]): number | undefined {
+  const index = argv.indexOf(MAX_TIME_FLAG);
+  if (index === -1) {
+    return undefined;
+  }
+
+  const raw = argv[index + 1];
+  if (raw === undefined) {
+    throw new TypeError("--max-time requires a number");
+  }
+
+  if (!isFiniteNumberToken(raw)) {
+    throw new TypeError(
+      `--max-time expects a finite number, received ${raw}`,
+    );
+  }
+
+  return Number(raw);
+}
+
+/**
  * Read `--min-depth <km>` from CLI args.
  * Returns undefined when the flag is omitted, which keeps every depth.
  * A missing or non-numeric value throws `TypeError`.
@@ -203,9 +229,9 @@ export function readSort(argv: readonly string[]): QuakeSort | undefined {
  * CLI selection on a `parseQuakes` result.
  * Drops quakes below `--min-magnitude`, quakes above `--max-magnitude`,
  * quakes whose `place` does not contain `--place`, quakes deeper than
- * `--max-depth`, quakes shallower than `--min-depth`, and quakes earlier
- * than `--min-time`, optionally orders by magnitude descending, then
- * keeps the first `--limit` rows.
+ * `--max-depth`, quakes shallower than `--min-depth`, quakes earlier
+ * than `--min-time`, and quakes later than `--max-time`, optionally
+ * orders by magnitude descending, then keeps the first `--limit` rows.
  * Omitted flags keep the whole list in feed order.
  */
 export function selectQuakes(
@@ -218,6 +244,7 @@ export function selectQuakes(
   const maxDepth = readMaxDepth(argv);
   const minDepth = readMinDepth(argv);
   const minTime = readMinTime(argv);
+  const maxTime = readMaxTime(argv);
   const limit = readLimit(argv);
   const sort = readSort(argv);
 
@@ -246,10 +273,15 @@ export function selectQuakes(
       ? byMaxDepth
       : byMaxDepth.filter((quake) => quake.depthKm >= minDepth);
 
-  const selected =
+  const byMinTime =
     minTime === undefined
       ? byMinDepth
       : byMinDepth.filter((quake) => quake.time >= minTime);
+
+  const selected =
+    maxTime === undefined
+      ? byMinTime
+      : byMinTime.filter((quake) => quake.time <= maxTime);
 
   if (sort === "magnitude") {
     selected.sort((left, right) => right.magnitude - left.magnitude);
