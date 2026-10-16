@@ -387,6 +387,8 @@ The accepted token is a finite decimal, optionally signed, with an optional frac
 
 Zero and a negative ceiling are finite numbers, so they do not throw. The in-memory times are `1709913600000`, `1710000000000`, and `1710086400000`, all after the epoch. `--max-time 0` keeps none of them. `--max-time -1` keeps none of them. That is the opposite of an omitted flag on this list: every in-memory time is later than both cutoffs. A ceiling of `0` is a real filter, not the omitted flag. Omitting the flag is what keeps every time, including a time after the epoch.
 
+`--min-time` and `--max-time` together are an inclusive window. A quake stays when `time` is greater than or equal to the floor and less than or equal to the ceiling. On the in-memory list, `--min-time 1710000000000 --max-time 1710000000000` keeps `edge` and drops `low` and `high`. `--min-time 1709913600000 --max-time 1710086400000` keeps all three, because each time sits on a bound. A floor above the ceiling keeps nothing: `--min-time 1710086400000 --max-time 1710000000000` drops `high` for the ceiling and drops `low` and `edge` for the floor. Omitting either flag leaves that side open. `--max-time 1710000000000` with no `--min-time` still keeps `low` and `edge`.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
