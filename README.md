@@ -379,6 +379,8 @@ On the in-memory list in `tests/maxTime.test.ts`, `--max-time 1710000000000` kee
 
 A missing value throws `TypeError` (`--max-time requires a number`). A token that is not a finite number, such as `soon`, throws `TypeError` (`--max-time expects a finite number, received soon`). Those checks happen before `fetch`, and the message is written to stderr with exit code 1.
 
+The comparison is `time <= epoch-ms`. A quake at the ceiling stays. On the in-memory list, `edge` is `1710000000000`, so `--max-time 1710000000000` keeps it and `--max-time 1709999999999` drops it. `--max-time 1709913600000` keeps only `low`. `--max-time 1710086400000` keeps `high` as well, because that time is equal to the ceiling, not later. `--max-time 1709913599999` keeps nothing. The number is epoch milliseconds, the same unit as `time`. The filter does not convert seconds or an ISO date.
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
