@@ -381,6 +381,10 @@ A missing value throws `TypeError` (`--max-time requires a number`). A token tha
 
 The comparison is `time <= epoch-ms`. A quake at the ceiling stays. On the in-memory list, `edge` is `1710000000000`, so `--max-time 1710000000000` keeps it and `--max-time 1709999999999` drops it. `--max-time 1709913600000` keeps only `low`. `--max-time 1710086400000` keeps `high` as well, because that time is equal to the ceiling, not later. `--max-time 1709913599999` keeps nothing. The number is epoch milliseconds, the same unit as `time`. The filter does not convert seconds or an ISO date.
 
+`readMaxTime` uses the same argv shape as `readMinTime`: the flag is its own token, and the value is the next token. `--max-time=1710000000000` is not that flag, so every time stays. The flag name is case-sensitive. `--Max-time 1710000000000` does not select a time filter. Those checks run before `fetch`.
+
+The accepted token is a finite decimal, optionally signed, with an optional fraction and exponent (`1710000000000`, `+1710000000000`, `1709913600000.0`, `1.71e12`, `1.7100864e12`). `--max-time 1.71e12` is `1710000000000` and keeps `low` and `edge`. `--max-time +1710000000000` keeps those same two. `--max-time 1709913600000.0` keeps `low`. `--max-time 1.7100864e12` is `1710086400000` and keeps all three. `soon` and `1710000000000ms` are not finite numbers, so each throws `TypeError` (`--max-time expects a finite number, received soon`, and the same sentence with `1710000000000ms`).
+
 ## Location fields
 
 `parseQuakes` copies the Feature Point onto the same object the CLI prints. For the first fixture event that object is:
