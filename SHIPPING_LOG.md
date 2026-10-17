@@ -268,3 +268,8 @@ The Day 14 max-time entry above described the tree at the squash merge. The READ
 ## 2026-10-17 — Day 15 squash-merged
 
 Pull request #14, "Day 15: sort selected quakes by time", was squash-merged into `main`. The merge commit is `807d7637c4929c687165aac73325338d63433d87`. It carries `--sort time` in `readSort` and `selectQuakes` in `src/selectQuakes.ts`, `tests/sortTime.test.ts`, and the README usage for `--sort time`. `readSort` already ran before `fetch` in `src/quakes.ts`, so the CLI did not need a new call. `cursor/day15-sort-time-7cd7` was deleted after the merge, so `main` holds one Day 15 commit rather than the branch commit plus a second copy.
+
+## Still open after the Day 15 merge
+
+- Day 16 has not started. The CLI does not take `--sort depth`, so a depth order cannot list the shallowest quakes first before the limit.
+- JSON still prints a plain array with no count line. An empty text selection still prints no lines.
