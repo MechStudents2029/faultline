@@ -264,3 +264,7 @@ The Day 14 max-time entry above described the tree at the squash merge. The READ
 - The selected list is ordered by `time` ascending, oldest first. Omitting `--sort` keeps feed order. A missing value, or a token other than `magnitude` or `time`, throws `TypeError`.
 - The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`.
 - `tests/sortTime.test.ts` sorts an in-memory list and spies on `fetch`. No new feed and no API key.
+
+## 2026-10-17 — Day 15 squash-merged
+
+Pull request #14, "Day 15: sort selected quakes by time", was squash-merged into `main`. The merge commit is `807d7637c4929c687165aac73325338d63433d87`. It carries `--sort time` in `readSort` and `selectQuakes` in `src/selectQuakes.ts`, `tests/sortTime.test.ts`, and the README usage for `--sort time`. `readSort` already ran before `fetch` in `src/quakes.ts`, so the CLI did not need a new call. `cursor/day15-sort-time-7cd7` was deleted after the merge, so `main` holds one Day 15 commit rather than the branch commit plus a second copy.
