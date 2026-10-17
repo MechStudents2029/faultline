@@ -154,6 +154,8 @@ A missing `--limit` value throws `TypeError` (`--limit requires a positive integ
 
 `--sort magnitude` is a stable descending sort. Two quakes with the same magnitude keep the order they had in the feed. The tie test builds `first` and `second` at magnitude 5, then `largest` at 6.2. After `--sort magnitude` the ids are `largest`, `first`, `second`. The sort copies the list first, so the array returned by `parseQuakes` stays in feed order.
 
+`--sort time` is a stable ascending sort. Two quakes with the same `time` keep the order they had in the feed. The tie test builds `later` at `1710086400000`, then `first` and `second` at `1710000000000`. After `--sort time` the ids are `first`, `second`, `later`. The sort copies the list first, so the array returned by `parseQuakes` stays `later`, `first`, `second`.
+
 `--limit`, `--sort`, `--min-magnitude`, `--place`, and `--format` each look up their own flag. One flag's value is not consumed by the other, and the order of the flags does not change the selection. These two commands select the same quakes, the two largest that remain after the magnitude filter, and print the same text lines:
 
 ```bash
