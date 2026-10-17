@@ -10,7 +10,7 @@ const MAX_TIME_FLAG = "--max-time";
 const LIMIT_FLAG = "--limit";
 const SORT_FLAG = "--sort";
 
-export type QuakeSort = "magnitude";
+export type QuakeSort = "magnitude" | "time";
 
 /**
  * Read `--min-magnitude <number>` from CLI args.
@@ -204,8 +204,10 @@ export function readPlace(argv: readonly string[]): string | undefined {
 }
 
 /**
- * Read `--sort magnitude` from CLI args.
+ * Read `--sort magnitude` or `--sort time` from CLI args.
  * Returns undefined when the flag is omitted, which keeps feed order.
+ * A missing value, or any token other than `magnitude` or `time`,
+ * throws `TypeError`.
  */
 export function readSort(argv: readonly string[]): QuakeSort | undefined {
   const index = argv.indexOf(SORT_FLAG);
@@ -215,14 +217,14 @@ export function readSort(argv: readonly string[]): QuakeSort | undefined {
 
   const raw = argv[index + 1];
   if (raw === undefined) {
-    throw new TypeError("--sort requires magnitude");
+    throw new TypeError("--sort requires magnitude or time");
   }
 
-  if (raw !== "magnitude") {
-    throw new TypeError(`--sort expects magnitude, received ${raw}`);
+  if (!isQuakeSort(raw)) {
+    throw new TypeError(`--sort expects magnitude or time, received ${raw}`);
   }
 
-  return "magnitude";
+  return raw;
 }
 
 /**
@@ -231,7 +233,8 @@ export function readSort(argv: readonly string[]): QuakeSort | undefined {
  * quakes whose `place` does not contain `--place`, quakes deeper than
  * `--max-depth`, quakes shallower than `--min-depth`, quakes earlier
  * than `--min-time`, and quakes later than `--max-time`, optionally
- * orders by magnitude descending, then keeps the first `--limit` rows.
+ * orders by magnitude descending or by time ascending, then keeps
+ * the first `--limit` rows.
  * Omitted flags keep the whole list in feed order.
  */
 export function selectQuakes(
@@ -285,6 +288,8 @@ export function selectQuakes(
 
   if (sort === "magnitude") {
     selected.sort((left, right) => right.magnitude - left.magnitude);
+  } else if (sort === "time") {
+    selected.sort((left, right) => left.time - right.time);
   }
 
   if (limit === undefined) {
@@ -292,6 +297,10 @@ export function selectQuakes(
   }
 
   return selected.slice(0, limit);
+}
+
+function isQuakeSort(raw: string): raw is QuakeSort {
+  return raw === "magnitude" || raw === "time";
 }
 
 function isFiniteNumberToken(raw: string): boolean {

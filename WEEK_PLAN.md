@@ -132,6 +132,6 @@ Day 13 can drop a quake earlier than `--min-time`. Day 14 adds `--max-time <epoc
 
 ## Day 15 — sort by time
 
-Status: unstarted
+Status: done
 
-Day 14 can drop a quake later than `--max-time`. Day 15 can add `--sort time`, parsed before `fetch` the same way as `--sort magnitude`. The selected list would be ordered by `time` ascending, oldest first. Omitting `--sort` would keep feed order. A missing value, or a token other than `magnitude` or `time`, would throw `TypeError` before `fetch`. The sort would run after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests would sort an in-memory quake list and spy on `fetch`.
+Day 14 can drop a quake later than `--max-time`. Day 15 adds `--sort time`, parsed before `fetch` the same way as `--sort magnitude`. The selected list is ordered by `time` ascending, oldest first. Omitting `--sort` keeps feed order. A missing value, or a token other than `magnitude` or `time`, throws `TypeError` before `fetch`. The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests sort an in-memory quake list and spy on `fetch`.
