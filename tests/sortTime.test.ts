@@ -75,19 +75,19 @@ describe("sort by time", () => {
 
     expect(() => readSort(["--sort"])).toThrow(TypeError);
     expect(() => readSort(["--sort"])).toThrow(
-      "--sort requires magnitude or time",
+      "--sort requires magnitude, time, or depth",
     );
-    expect(() => readSort(["--sort", "depth"])).toThrow(
-      "--sort expects magnitude or time, received depth",
+    expect(() => readSort(["--sort", "DEPTH"])).toThrow(
+      "--sort expects magnitude, time, or depth, received DEPTH",
     );
     expect(() => readSort(["--sort", "TIME"])).toThrow(
-      "--sort expects magnitude or time, received TIME",
+      "--sort expects magnitude, time, or depth, received TIME",
     );
     expect(() => readSort(["--sort", "MAGNITUDE"])).toThrow(
-      "--sort expects magnitude or time, received MAGNITUDE",
+      "--sort expects magnitude, time, or depth, received MAGNITUDE",
     );
     expect(() => selectQuakes(parsed, ["--sort", "place"])).toThrow(
-      "--sort expects magnitude or time, received place",
+      "--sort expects magnitude, time, or depth, received place",
     );
 
     expect(fetchSpy).not.toHaveBeenCalled();

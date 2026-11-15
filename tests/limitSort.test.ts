@@ -122,13 +122,13 @@ describe("limit and sort", () => {
   it("rejects a missing or unknown --sort value", () => {
     expect(() => readSort(["--sort"])).toThrow(TypeError);
     expect(() => readSort(["--sort"])).toThrow(
-      "--sort requires magnitude or time",
+      "--sort requires magnitude, time, or depth",
     );
-    expect(() => readSort(["--sort", "depth"])).toThrow(
-      "--sort expects magnitude or time, received depth",
+    expect(() => readSort(["--sort", "place"])).toThrow(
+      "--sort expects magnitude, time, or depth, received place",
     );
     expect(() => readSort(["--sort", "MAGNITUDE"])).toThrow(
-      "--sort expects magnitude or time, received MAGNITUDE",
+      "--sort expects magnitude, time, or depth, received MAGNITUDE",
     );
   });
 
