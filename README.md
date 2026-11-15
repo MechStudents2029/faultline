@@ -150,15 +150,23 @@ A missing `--limit` value throws `TypeError` (`--limit requires a positive integ
 
 `--sort=time` is not that flag either, so the list stays in feed order. `--Sort time` does not select a sort. The accepted values are the lowercase tokens `magnitude`, `time`, and `depth`. `readSort` returns that token, or `undefined` when the flag is omitted. `place`, `TIME`, `MAGNITUDE`, and `DEPTH` each throw `TypeError` before `fetch` (`--sort expects magnitude, time, or depth, received place`, and the same sentence with the other token).
 
+`--sort=depth` is not that flag either, so the list stays in feed order. `--Sort depth` does not select a sort.
+
 `--sort time` runs after every filter and before `--limit`. On the in-memory list in `tests/sortTime.test.ts` the feed order is `high` (`1710086400000`), `low` (`1709913600000`), `edge` (`1710000000000`). `--min-magnitude 5` drops `low` and leaves `high` then `edge`. `--sort time` then puts `edge` before `high`, because `1710000000000` is earlier than `1710086400000`. The same selection with the flags written in the other order still puts `edge` before `high`. `--max-time 1710000000000` drops `high` before the sort, so `--max-time 1710000000000 --sort time` returns `low` then `edge`.
 
+`--sort depth` also runs after every filter and before `--limit`. On the in-memory list in `tests/sortDepth.test.ts` the feed order is `high` (22.4 km), `low` (35 km), `edge` (10 km). `--min-magnitude 5` drops `low` and leaves `high` then `edge`. `--sort depth` then puts `edge` before `high`, because 10 km is shallower than 22.4 km. The same selection with the flags written in the other order still puts `edge` before `high`. `--max-time 1710000000000` drops `high` before the sort, so `--max-time 1710000000000 --sort depth` returns `edge` then `low`.
+
 `--limit` after `--sort time` counts the oldest rows, not the first rows of the feed. On that same list, `--limit 2` with no sort keeps `high` then `low`. `--sort time --limit 1` keeps `low`. `--sort time --limit 2` keeps `low` then `edge`. Writing `--limit` earlier in argv does not change that. `--max-time 1710000000000 --sort time --limit 9` still returns `low` then `edge`, because `high` is already later than the ceiling and the larger count cannot pull it back.
+
+`--limit` after `--sort depth` counts the shallowest rows, not the first rows of the feed. On that same list, `--limit 2` with no sort keeps `high` then `low`. `--sort depth --limit 1` keeps `edge`. `--sort depth --limit 2` keeps `edge` then `high`. Writing `--limit` earlier in argv does not change that. `--max-time 1710000000000 --sort depth --limit 9` still returns `edge` then `low`, because `high` is already later than the ceiling and the larger count cannot pull it back.
 
 `--limit` counts rows after the filter and the sort, not features in the raw feed. On the three-quake in-memory list, `--limit 9` returns `low`, `edge`, and `high` because the count is larger than the list. `--min-magnitude 5 --limit 1` returns only `edge`: `low` is already gone, and feed order of what remains puts `edge` first. When the filter removes every quake, sort and limit both see an empty list. `--format json` still prints `[]` with a trailing newline, and `--format text` still prints no lines.
 
 `--sort magnitude` is a stable descending sort. Two quakes with the same magnitude keep the order they had in the feed. The tie test builds `first` and `second` at magnitude 5, then `largest` at 6.2. After `--sort magnitude` the ids are `largest`, `first`, `second`. The sort copies the list first, so the array returned by `parseQuakes` stays in feed order.
 
 `--sort time` is a stable ascending sort. Two quakes with the same `time` keep the order they had in the feed. The tie test builds `later` at `1710086400000`, then `first` and `second` at `1710000000000`. After `--sort time` the ids are `first`, `second`, `later`. The sort copies the list first, so the array returned by `parseQuakes` stays `later`, `first`, `second`.
+
+`--sort depth` is a stable ascending sort. Two quakes with the same `depthKm` keep the order they had in the feed. The tie test builds `later` at 22.4 km, then `first` and `second` at 10 km. After `--sort depth` the ids are `first`, `second`, `later`. The sort copies the list first, so the array returned by `parseQuakes` stays `later`, `first`, `second`.
 
 `--limit`, `--sort`, `--min-magnitude`, `--place`, and `--format` each look up their own flag. One flag's value is not consumed by the other, and the order of the flags does not change the selection. These two commands select the same quakes, the two largest that remain after the magnitude filter, and print the same text lines:
 
