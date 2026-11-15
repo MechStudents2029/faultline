@@ -284,3 +284,7 @@ The Day 15 sort-by-time entry above described the tree at the squash merge. The 
 - The selected list is ordered by `depthKm` ascending, shallowest first. Omitting `--sort` keeps feed order. A missing value, or a token other than `magnitude`, `time`, or `depth`, throws `TypeError`.
 - The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`.
 - `tests/sortDepth.test.ts` sorts an in-memory list and spies on `fetch`. No new feed and no API key.
+
+## 2026-11-15 — Day 16 squash-merged
+
+Pull request #15, "Day 16: sort selected quakes by depth", was squash-merged into `main`. The merge commit is `3bac6f17a94229fc5f21ce289f1199cb3f3aec6e`. It carries `--sort depth` in `readSort` and `selectQuakes` in `src/selectQuakes.ts`, `tests/sortDepth.test.ts`, and the README usage for `--sort depth`. `readSort` already ran before `fetch` in `src/quakes.ts`, so the CLI did not need a new call. `day16-sort-depth` was deleted after the merge, so `main` holds one Day 16 commit rather than the branch commit plus a second copy.
