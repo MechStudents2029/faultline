@@ -288,3 +288,12 @@ The Day 15 sort-by-time entry above described the tree at the squash merge. The 
 ## 2026-11-15 — Day 16 squash-merged
 
 Pull request #15, "Day 16: sort selected quakes by depth", was squash-merged into `main`. The merge commit is `3bac6f17a94229fc5f21ce289f1199cb3f3aec6e`. It carries `--sort depth` in `readSort` and `selectQuakes` in `src/selectQuakes.ts`, `tests/sortDepth.test.ts`, and the README usage for `--sort depth`. `readSort` already ran before `fetch` in `src/quakes.ts`, so the CLI did not need a new call. `day16-sort-depth` was deleted after the merge, so `main` holds one Day 16 commit rather than the branch commit plus a second copy.
+
+## Still open after the Day 16 merge
+
+- Day 17 has not started. The CLI does not take `--feed week`, so a significant-week window cannot replace the day feed.
+- JSON still prints a plain array with no count line. An empty text selection still prints no lines.
+
+## 2026-11-15 — README notes after the Day 16 merge
+
+The Day 16 sort-by-depth entry above described the tree at the squash merge. The README on `main` now records that `--sort depth` orders by `depthKm` ascending, shallowest first, and that equal depths stay in feed order (`first`, `second`, `later`). `--sort=depth` and `--Sort` do not select a sort. The accepted tokens are the lowercase words `magnitude`, `time`, and `depth`. A missing value throws `--sort requires magnitude, time, or depth`. `place`, `TIME`, `MAGNITUDE`, and `DEPTH` throw before `fetch`. The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`. On the depth-sort list, `--min-magnitude 5 --sort depth` keeps `edge` then `high`. `--limit 2` with no sort keeps `high` then `low`, and `--sort depth --limit 2` keeps `edge` then `high`. `--sort depth --limit 2 --format text` prints the header, the `edge` line, the `high` line, and `2 quakes`. `--sort depth --limit 1 --format json` is the `edge` object with `depthKm` still `10`. The full filter set with `--limit 1` keeps `edge` in either flag order. The test notes list the ten `tests/sortDepth.test.ts` cases and the fetch spies. `WEEK_PLAN.md` records squash commit `3bac6f17a94229fc5f21ce289f1199cb3f3aec6e` and sketches Day 17 (`--feed week`) as unstarted. No new feed and no API key.

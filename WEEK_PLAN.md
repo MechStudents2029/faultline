@@ -145,3 +145,9 @@ Status: done, squash-merged to `main` in pull request #15
 The squash commit is `3bac6f17a94229fc5f21ce289f1199cb3f3aec6e`. GitHub deleted `day16-sort-depth` after the merge. `readSort` runs before `fetch`. `--sort depth` orders the selected list by `depthKm` ascending, shallowest first. Omitting `--sort` keeps feed order. A missing value, or a token other than `magnitude`, `time`, or `depth`, throws `TypeError` before `fetch`.
 
 Day 15 can list the selected quakes oldest-first. Day 16 adds `--sort depth`, parsed before `fetch` the same way as `--sort time`. The selected list is ordered by `depthKm` ascending, shallowest first. Omitting `--sort` keeps feed order. A missing value, or a token other than `magnitude`, `time`, or `depth`, throws `TypeError` before `fetch`. The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests sort an in-memory quake list and spy on `fetch`.
+
+## Day 17 — significant week feed
+
+Status: unstarted
+
+Day 16 can list the selected quakes shallowest-first. Day 17 could add `--feed week`, parsed before `fetch` the same way as `--format`. That token would GET the public USGS significant-week GeoJSON instead of the significant-day feed. Omitting the flag, or passing `--feed day`, would keep today's URL. A missing value, or a token other than `day` or `week`, would throw `TypeError` before `fetch`. The existing filters, sorts, limit, and formats would run on that longer list. It would stay a free USGS feed: no new API key. Tests would stub `fetch` and would not call USGS.
