@@ -140,6 +140,6 @@ Day 14 can drop a quake later than `--max-time`. Day 15 adds `--sort time`, pars
 
 ## Day 16 — sort by depth
 
-Status: unstarted
+Status: done
 
-Day 15 can list the selected quakes oldest-first. Day 16 could add `--sort depth`, parsed before `fetch` the same way as `--sort time`. The selected list would be ordered by `depthKm` ascending, shallowest first. Omitting `--sort` would keep feed order. A missing value, or a token other than `magnitude`, `time`, or `depth`, would throw `TypeError` before `fetch`. The sort would run after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`. It would stay on the existing significant-day feed: no new URL and no API key. Tests would sort an in-memory quake list and spy on `fetch`.
+Day 15 can list the selected quakes oldest-first. Day 16 adds `--sort depth`, parsed before `fetch` the same way as `--sort time`. The selected list is ordered by `depthKm` ascending, shallowest first. Omitting `--sort` keeps feed order. A missing value, or a token other than `magnitude`, `time`, or `depth`, throws `TypeError` before `fetch`. The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests sort an in-memory quake list and spy on `fetch`.
