@@ -140,6 +140,8 @@ Day 14 can drop a quake later than `--max-time`. Day 15 adds `--sort time`, pars
 
 ## Day 16 — sort by depth
 
-Status: done
+Status: done, squash-merged to `main` in pull request #15
+
+The squash commit is `3bac6f17a94229fc5f21ce289f1199cb3f3aec6e`. GitHub deleted `day16-sort-depth` after the merge. `readSort` runs before `fetch`. `--sort depth` orders the selected list by `depthKm` ascending, shallowest first. Omitting `--sort` keeps feed order. A missing value, or a token other than `magnitude`, `time`, or `depth`, throws `TypeError` before `fetch`.
 
 Day 15 can list the selected quakes oldest-first. Day 16 adds `--sort depth`, parsed before `fetch` the same way as `--sort time`. The selected list is ordered by `depthKm` ascending, shallowest first. Omitting `--sort` keeps feed order. A missing value, or a token other than `magnitude`, `time`, or `depth`, throws `TypeError` before `fetch`. The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`. It stays on the existing significant-day feed: no new URL and no API key. Tests sort an in-memory quake list and spy on `fetch`.
