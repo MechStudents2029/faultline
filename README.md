@@ -1,5 +1,7 @@
 # faultline
 
+[![CI](https://github.com/MechStudents2029/faultline/actions/workflows/ci.yml/badge.svg)](https://github.com/MechStudents2029/faultline/actions/workflows/ci.yml)
+
 Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`. Day 8 adds `--max-depth`. Day 9 adds `--min-depth`. Day 10 adds a header line to `--format text`. Day 11 adds a trailing count line to a non-empty `--format text` listing. Day 12 adds `--max-magnitude`. Day 13 adds `--min-time`. Day 14 adds `--max-time`. Day 15 adds `--sort time`. Day 16 adds `--sort depth`. Day 17 adds `--feed week`.
 
 ## Project goals
