@@ -148,6 +148,8 @@ Day 15 can list the selected quakes oldest-first. Day 16 adds `--sort depth`, pa
 
 ## Day 17 — significant week feed
 
-Status: unstarted
+Status: done, squash-merged to `main` in pull request #16
+
+The squash commit is `de3060c264ef653a132cf2ac1bb9be0603079abf`. GitHub deleted `day17-feed-week` after the merge. `readFeed` runs before `fetch`. `--feed week` GETs the significant-week GeoJSON; omitting the flag or `--feed day` keeps the day feed. A missing value, or a token other than `day` or `week`, throws `TypeError` before `fetch`. Feed loading lives in `src/feed.ts`.
 
 Day 16 can list the selected quakes shallowest-first. Day 17 could add `--feed week`, parsed before `fetch` the same way as `--format`. That token would GET the public USGS significant-week GeoJSON instead of the significant-day feed. Omitting the flag, or passing `--feed day`, would keep today's URL. A missing value, or a token other than `day` or `week`, would throw `TypeError` before `fetch`. The existing filters, sorts, limit, and formats would run on that longer list. It would stay a free USGS feed: no new API key. Tests would stub `fetch` and would not call USGS.
