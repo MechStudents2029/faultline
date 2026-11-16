@@ -1,6 +1,6 @@
 # faultline
 
-Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`. Day 8 adds `--max-depth`. Day 9 adds `--min-depth`. Day 10 adds a header line to `--format text`. Day 11 adds a trailing count line to a non-empty `--format text` listing. Day 12 adds `--max-magnitude`. Day 13 adds `--min-time`. Day 14 adds `--max-time`. Day 15 adds `--sort time`. Day 16 adds `--sort depth`.
+Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`. Day 8 adds `--max-depth`. Day 9 adds `--min-depth`. Day 10 adds a header line to `--format text`. Day 11 adds a trailing count line to a non-empty `--format text` listing. Day 12 adds `--max-magnitude`. Day 13 adds `--min-time`. Day 14 adds `--max-time`. Day 15 adds `--sort time`. Day 16 adds `--sort depth`. Day 17 adds `--feed week`.
 
 ## Project goals
 
@@ -22,6 +22,7 @@ Faultline is a one-week resume CLI. Someone should be able to clone the repo and
 - Day 14, done: `--max-time <epoch-ms>` keeps quakes whose `time` is less than or equal to that number. Omitting the flag keeps every time. The filter runs with `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, and `--min-time`, before `--sort magnitude` and `--limit`.
 - Day 15, done: `--sort time` orders the selected list by `time` ascending, oldest first. Omitting `--sort` keeps feed order. The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`.
 - Day 16, done: `--sort depth` orders the selected list by `depthKm` ascending, shallowest first. Omitting `--sort` keeps feed order. The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`.
+- Day 17, done: `--feed week` GETs the USGS significant-week feed instead of the significant-day feed. Omitting the flag, or passing `--feed day`, keeps the day feed. Every filter, sort, limit, and format runs on the longer list.
 
 `parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
 
@@ -51,6 +52,23 @@ A quiet significant day is a successful response. USGS can return a FeatureColle
 ```
 
 That empty array is not an error. The process exit code stays 0. The same `[]` line is printed when the feed has events but every magnitude is below `--min-magnitude`.
+
+## `--feed` window
+
+`--feed <day|week>` picks which free USGS summary feed the script GETs. `readFeed` runs on argv before `fetch`, like `readFormat`.
+
+```bash
+npm run quakes -- --feed week --sort magnitude --limit 5 --format text
+```
+
+| Token | URL |
+| --- | --- |
+| `day` (default) | `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson` |
+| `week` | `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson` |
+
+A missing value throws `TypeError` (`--feed requires day or week`) before `fetch`. Any other token, including `WEEK` or `month`, throws `--feed expects day or week, received <token>`. `--feed=week` and `--Feed week` do not select a feed, so the day feed stays. A non-OK response names the window: `USGS significant-week feed failed: <status> <statusText>`. A quiet week is a successful FeatureCollection with an empty `features` array, so JSON prints `[]` and text prints no lines.
+
+`tests/feed.test.ts` stubs `fetch` with an in-memory three-quake week (`sun` M7, `mon` M4.9, `tue` M6.1). `--feed week --min-magnitude 5 --sort time --limit 2 --format text` prints the header, `sun`, `tue`, and `2 quakes`. `npm test` still does not call USGS, and neither feed needs an API key.
 
 ## `--min-magnitude` filter
 
