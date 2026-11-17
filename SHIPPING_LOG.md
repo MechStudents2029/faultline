@@ -301,3 +301,7 @@ The Day 16 sort-by-depth entry above described the tree at the squash merge. The
 ## 2026-11-16 — Day 17 significant week feed
 
 Pull request #16, "Day 17: --feed week", was squash-merged into `main`. The merge commit is `de3060c264ef653a132cf2ac1bb9be0603079abf`. It adds `src/feed.ts` (`readFeed`, `feedUrl`, `loadFeed`), moves the GET out of `src/quakes.ts`, adds `tests/feed.test.ts` (7 cases with a stubbed `fetch`), and documents `--feed` in the README. The suite is 112 tests, typecheck clean. A live `--feed week` run on 2026-11-16 returned an empty list because USGS listed 0 significant quakes for the past week; the CLI printed nothing for text and exited 0, as documented.
+
+## 2026-11-17 — Day 18 README wrap-up
+
+Pull request #17, "Day 18: README quick start, flag reference, and CI note", was squash-merged into `main`. The merge commit is `23b9d7b7fc5afc5b2675ca5453580665241042e9`. It replaces the day-by-day intro paragraph with a short description, adds a quick start with three example commands, real text output from a live `--feed week --sort magnitude --limit 5 --format text` run (one M 6.6 quake, 148 km WSW of Tual, Indonesia), an eleven-row flag reference table, the pipeline order (load, parse, filter, sort, limit, render), and a CI section. A follow-up commit points the free-feed section at both URLs in the `FEED_URLS` map in `src/feed.ts`, replacing a stale `SIGNIFICANT_DAY_URL` reference. The suite is still 112 tests, typecheck clean. This closes the Faultline week.
