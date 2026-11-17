@@ -2,7 +2,60 @@
 
 [![CI](https://github.com/MechStudents2029/faultline/actions/workflows/ci.yml/badge.svg)](https://github.com/MechStudents2029/faultline/actions/workflows/ci.yml)
 
-Faultline is a public TypeScript resume CLI for USGS significant earthquakes. The feed is free and needs no API key. Day 1 parses a checked-in GeoJSON fixture into `{ id, magnitude, place, time }` (epoch milliseconds, matching USGS `properties.time`) and does not call the network. Day 2 fetches the live significant-day feed with `npm run quakes`. Day 4 adds `longitude`, `latitude`, and `depthKm` from each Feature Point. Day 5 adds `--format text`, one summary line per selected quake. Day 6 adds `--limit` and `--sort magnitude`. Day 7 adds `--place`. Day 8 adds `--max-depth`. Day 9 adds `--min-depth`. Day 10 adds a header line to `--format text`. Day 11 adds a trailing count line to a non-empty `--format text` listing. Day 12 adds `--max-magnitude`. Day 13 adds `--min-time`. Day 14 adds `--max-time`. Day 15 adds `--sort time`. Day 16 adds `--sort depth`. Day 17 adds `--feed week`.
+Faultline is a small TypeScript CLI that lists significant earthquakes from the free USGS GeoJSON feeds. No account, no API key. It filters by magnitude, depth, place, and time, sorts by magnitude, time, or depth, and prints JSON or a readable text table. The parser is a pure function, and the test suite runs fully offline against a checked-in fixture and stubbed `fetch`.
+
+## Quick start
+
+Requires Node.js 20 or newer.
+
+```bash
+git clone https://github.com/MechStudents2029/faultline.git
+cd faultline
+npm install
+
+# Everything USGS marked significant in the past day, as JSON
+npm run quakes
+
+# The past week, strongest first, as a text table
+npm run quakes -- --feed week --sort magnitude --limit 5 --format text
+
+# Shallow M6+ quakes in the past week
+npm run quakes -- --feed week --min-magnitude 6 --max-depth 70 --format text
+```
+
+Sample text output (live run on 2026-11-17):
+
+```text
+magnitude  depth in km  place  UTC time
+M 6.6  68 km  148 km WSW of Tual, Indonesia  2026-11-16T21:11:20.515Z
+1 quake
+```
+
+An empty selection prints nothing in text mode and `[]` in JSON mode, and exits 0.
+
+## Flag reference
+
+Every flag is optional and parsed before any network call. A missing or invalid value throws `TypeError` with a short message and exits 1.
+
+| Flag | Value | Effect | Default |
+| --- | --- | --- | --- |
+| `--feed` | `day` or `week` | Which USGS significant-earthquake feed to GET | `day` |
+| `--min-magnitude` | number | Keep quakes with `magnitude >= value` | all |
+| `--max-magnitude` | number | Keep quakes with `magnitude <= value` | all |
+| `--place` | text | Keep quakes whose `place` contains the text (case-sensitive) | all |
+| `--min-depth` | km | Keep quakes with `depthKm >= value` | all |
+| `--max-depth` | km | Keep quakes with `depthKm <= value` | all |
+| `--min-time` | epoch ms | Keep quakes with `time >= value` | all |
+| `--max-time` | epoch ms | Keep quakes with `time <= value` | all |
+| `--sort` | `magnitude`, `time`, or `depth` | Magnitude descending, time ascending (oldest first), or depth ascending (shallowest first); ties keep feed order | feed order |
+| `--limit` | positive integer | Keep the first N quakes after filtering and sorting | all |
+| `--format` | `json` or `text` | Two-space JSON array, or a header + one line per quake + a count line | `json` |
+
+Pipeline order: load feed, parse, apply every filter, sort, limit, render.
+
+## Continuous integration
+
+[GitHub Actions](.github/workflows/ci.yml) runs `npm ci`, `npm run typecheck`, and `npm test` on Node 22 for every push to `main` and every pull request. The tests never call USGS, so CI does not depend on the network or on how many quakes happened today.
 
 ## Project goals
 
