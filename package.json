@@ -1,7 +1,19 @@
 {
   "name": "faultline",
   "version": "0.1.0",
-  "description": "TypeScript CLI for USGS significant earthquakes. No API key.",
+  "description": "TypeScript CLI for USGS significant earthquakes: filter, sort, and print the free day or week feed. No API key.",
+  "keywords": [
+    "earthquakes",
+    "usgs",
+    "geojson",
+    "cli",
+    "typescript"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MechStudents2029/faultline.git"
+  },
+  "homepage": "https://github.com/MechStudents2029/faultline#readme",
   "type": "module",
   "engines": {
     "node": ">=20"
