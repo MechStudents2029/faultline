@@ -90,7 +90,7 @@ npm install
 npm run quakes
 ```
 
-Each object is `{ id, magnitude, place, time, longitude, latitude, depthKm }`. `time` is still USGS epoch milliseconds. A non-OK HTTP response writes `USGS significant-day feed failed: <status> <statusText>` to stderr and sets the exit code to 1.
+Each object is `{ id, magnitude, place, time, longitude, latitude, depthKm }`. `time` is still USGS epoch milliseconds. A non-OK HTTP response writes `USGS significant-day feed failed: <status> <statusText>` (or `significant-week` with `--feed week`) to stderr and sets the exit code to 1.
 
 Pass `--min-magnitude` after npm's `--` so the flag reaches the script instead of npm:
 
@@ -643,8 +643,9 @@ That file has ten tests. One expects `--place high` to leave the parsed array in
 
 ## Free USGS feed (no API key)
 
-`npm run quakes` GETs this URL with `fetch` and sends no API key, no signup, and no `Authorization` header:
+`npm run quakes` GETs one of these URLs with `fetch` and sends no API key, no signup, and no `Authorization` header:
 
-https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson
+- `--feed day` (default): https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_day.geojson
+- `--feed week`: https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_week.geojson
 
-USGS serves that summary to anonymous clients. The body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day. The same URL is the `SIGNIFICANT_DAY_URL` constant in `src/quakes.ts` and `metadata.url` on the fixture. `npm test` still reads `fixtures/significant_day.sample.geojson` from disk, so a USGS outage or a missing network does not fail the suite. The CLI is the only path that opens a socket, and only after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, `--max-time`, `--limit`, `--sort`, and `--format` parse.
+USGS serves those summaries to anonymous clients. Each body is a GeoJSON FeatureCollection of earthquakes USGS labeled significant over the past day or week. Both URLs live in the `FEED_URLS` map in `src/feed.ts`; the day URL is also `metadata.url` on the fixture. `npm test` still reads `fixtures/significant_day.sample.geojson` from disk and stubs `fetch`, so a USGS outage or a missing network does not fail the suite. The CLI is the only path that opens a socket, and only after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, `--max-time`, `--limit`, `--sort`, `--format`, and `--feed` parse.
