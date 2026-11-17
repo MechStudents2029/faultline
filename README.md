@@ -78,6 +78,7 @@ Faultline is a one-week resume CLI. Someone should be able to clone the repo and
 - Day 15, done: `--sort time` orders the selected list by `time` ascending, oldest first. Omitting `--sort` keeps feed order. The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`.
 - Day 16, done: `--sort depth` orders the selected list by `depthKm` ascending, shallowest first. Omitting `--sort` keeps feed order. The sort runs after `--min-magnitude`, `--max-magnitude`, `--place`, `--max-depth`, `--min-depth`, `--min-time`, and `--max-time`, and before `--limit`.
 - Day 17, done: `--feed week` GETs the USGS significant-week feed instead of the significant-day feed. Omitting the flag, or passing `--feed day`, keeps the day feed. Every filter, sort, limit, and format runs on the longer list.
+- Day 18, done: the README opens with a quick start, a flag reference table, and a CI note. Faultline is feature-complete.
 
 `parseQuakes` stays a pure function. Fetching the feed and reading CLI flags belong beside it, not inside the parser.
 
