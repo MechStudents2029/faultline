@@ -156,6 +156,8 @@ Day 16 can list the selected quakes shallowest-first. Day 17 could add `--feed w
 
 ## Day 18 — wrap-up
 
-Status: unstarted
+Status: done, squash-merged to `main` in pull request #17
 
-Day 17 can read the significant-week feed. Day 18 closes the project: a short README quick start at the top (install, three example commands, sample text output), a flag reference table for every option shipped in Days 1–17, and a note that CI runs `npm run typecheck` and `npm test` on each push and pull request. No new flag, no new feed, and no API key.
+The squash commit is `23b9d7b7fc5afc5b2675ca5453580665241042e9`. GitHub deleted `day18-readme-wrapup` after the merge. The README now opens with a short description, a quick start (clone, install, three example commands), real `--format text` output from a live `--feed week` run on 2026-11-17, a flag reference table for all eleven flags, the pipeline order, and a CI section. No code changed; typecheck is clean and all 112 tests pass.
+
+Faultline is complete. Follow-up ideas (not scheduled): a `--format csv` option and a `--feed month` window. The next project is `gradient`, a from-scratch reverse-mode autodiff engine.
